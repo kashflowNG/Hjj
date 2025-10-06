@@ -1,4 +1,3 @@
-
 import os
 import json
 import hashlib
@@ -101,22 +100,22 @@ def generate_demo_profile() -> DemoProfile:
     """Generate realistic demo profile with fake data"""
     countries = ["en_US", "en_GB", "en_AU"]
     fake_locale = Faker(fake.random.choice(countries))
-    
+
     password = ''.join(fake.random.choices(
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$', 
         k=8
     ))
-    
+
     username = fake_locale.user_name()
     email = f"{username}@gmail.com"
     phone = fake_locale.phone_number()
-    
+
     tron = Tron(network=TRON_NETWORK)
     account = tron.generate_address()
-    
+
     balance_trx = round(fake.random.uniform(10, 5000), 2)
     balance_usdt = round(fake.random.uniform(100, 10000), 2)
-    
+
     return DemoProfile(
         phone=phone,
         email=email,
@@ -154,28 +153,28 @@ async def api_info():
 async def register(user: UserRegister, db: Session = Depends(get_db)):
     """Register a new user with PIN and optional password"""
     user_id = hashlib.sha256(user.pin.encode()).hexdigest()[:16]
-    
+
     existing_user = db.query(User).filter(User.id == user_id).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
-    
+
     hashed_pin = pwd_context.hash(user.pin)
     hashed_password = pwd_context.hash(user.password) if user.password else None
-    
+
     new_user = User(
         id=user_id,
         pin_hash=hashed_pin,
         password_hash=hashed_password
     )
-    
+
     db.add(new_user)
     db.commit()
-    
+
     access_token = create_access_token(
         data={"sub": user_id},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
@@ -186,23 +185,23 @@ async def register(user: UserRegister, db: Session = Depends(get_db)):
 async def login(user: UserLogin, db: Session = Depends(get_db)):
     """Login with PIN and optional password"""
     user_id = hashlib.sha256(user.pin.encode()).hexdigest()[:16]
-    
+
     stored_user = db.query(User).filter(User.id == user_id).first()
     if not stored_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
+
     if not pwd_context.verify(user.pin, stored_user.pin_hash):
         raise HTTPException(status_code=401, detail="Invalid PIN")
-    
+
     if user.password and stored_user.password_hash:
         if not pwd_context.verify(user.password, stored_user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid password")
-    
+
     access_token = create_access_token(
         data={"sub": user_id},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
@@ -215,11 +214,11 @@ async def create_wallet(wallet: WalletCreate, user_id: str = Depends(verify_toke
     """Create a new TRON wallet with Gmail, phone, and password"""
     tron = Tron(network=TRON_NETWORK)
     account = tron.generate_address()
-    
+
     # Generate realistic credentials
     countries = ["en_US", "en_GB", "en_AU"]
     fake_locale = Faker(fake.random.choice(countries))
-    
+
     username = fake_locale.user_name()
     gmail = f"{username}@gmail.com"
     phone = fake_locale.phone_number()
@@ -227,7 +226,7 @@ async def create_wallet(wallet: WalletCreate, user_id: str = Depends(verify_toke
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$', 
         k=8
     ))
-    
+
     wallet_id = secrets.token_hex(8)
     new_wallet = Wallet(
         id=wallet_id,
@@ -235,21 +234,24 @@ async def create_wallet(wallet: WalletCreate, user_id: str = Depends(verify_toke
         name=wallet.name,
         address=account['base58check_address'],
         private_key=account['private_key'],
-        hex_address=account.get('hex_address', '')
+        hex_address=account.get('hex_address', ''),
+        gmail=gmail,
+        phone=phone,
+        password=password
     )
-    
+
     db.add(new_wallet)
     db.commit()
     db.refresh(new_wallet)
-    
+
     return {
         "wallet_id": new_wallet.id,
         "name": new_wallet.name,
         "address": new_wallet.address,
         "private_key": new_wallet.private_key,
-        "gmail": gmail,
-        "phone": phone,
-        "password": password,
+        "gmail": new_wallet.gmail,
+        "phone": new_wallet.phone,
+        "password": new_wallet.password,
         "created_at": new_wallet.created_at.isoformat()
     }
 
@@ -259,7 +261,7 @@ async def import_wallet(wallet: WalletImport, user_id: str = Depends(verify_toke
     try:
         priv_key = PrivateKey(bytes.fromhex(wallet.private_key))
         address = priv_key.public_key.to_base58check_address()
-        
+
         wallet_id = secrets.token_hex(8)
         new_wallet = Wallet(
             id=wallet_id,
@@ -268,11 +270,11 @@ async def import_wallet(wallet: WalletImport, user_id: str = Depends(verify_toke
             address=address,
             private_key=wallet.private_key
         )
-        
+
         db.add(new_wallet)
         db.commit()
         db.refresh(new_wallet)
-        
+
         return {
             "wallet_id": new_wallet.id,
             "name": new_wallet.name,
@@ -286,7 +288,7 @@ async def import_wallet(wallet: WalletImport, user_id: str = Depends(verify_toke
 async def list_wallets(user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     """List all wallets for the authenticated user"""
     wallets = db.query(Wallet).filter(Wallet.user_id == user_id).all()
-    
+
     return {
         "wallets": [
             {
@@ -304,17 +306,21 @@ async def list_wallets(user_id: str = Depends(verify_token), db: Session = Depen
 async def get_wallet(wallet_id: str, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     """Get wallet details"""
     wallet = db.query(Wallet).filter(Wallet.id == wallet_id).first()
-    
+
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
-    
+
     if wallet.user_id != user_id:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     return {
         "wallet_id": wallet.id,
         "name": wallet.name,
         "address": wallet.address,
+        "private_key": wallet.private_key,
+        "gmail": wallet.gmail,
+        "phone": wallet.phone,
+        "password": wallet.password,
         "created_at": wallet.created_at.isoformat()
     }
 
@@ -322,29 +328,29 @@ async def get_wallet(wallet_id: str, user_id: str = Depends(verify_token), db: S
 async def delete_wallet(wallet_id: str, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     """Delete a wallet"""
     wallet = db.query(Wallet).filter(Wallet.id == wallet_id).first()
-    
+
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
-    
+
     if wallet.user_id != user_id:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     db.delete(wallet)
     db.commit()
-    
+
     return {"message": "Wallet deleted successfully"}
 
 @app.get("/wallets/{wallet_id}/export", tags=["Wallets"])
 async def export_private_key(wallet_id: str, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     """Export private key (use with caution!)"""
     wallet = db.query(Wallet).filter(Wallet.id == wallet_id).first()
-    
+
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
-    
+
     if wallet.user_id != user_id:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     return {
         "private_key": wallet.private_key,
         "address": wallet.address
@@ -354,16 +360,16 @@ async def export_private_key(wallet_id: str, user_id: str = Depends(verify_token
 async def mark_wallet_used(wallet_id: str, used: bool, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
     """Mark wallet as used or unused"""
     wallet = db.query(Wallet).filter(Wallet.id == wallet_id).first()
-    
+
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
-    
+
     if wallet.user_id != user_id:
         raise HTTPException(status_code=403, detail="Access denied")
-    
+
     wallet.is_used = used
     db.commit()
-    
+
     return {
         "wallet_id": wallet.id,
         "is_used": wallet.is_used,
@@ -376,17 +382,17 @@ async def get_balance(address: str):
     """Get TRX and USDT-TRC20 balance for an address"""
     try:
         tron = Tron(network=TRON_NETWORK)
-        
+
         trx_balance = tron.get_account_balance(address)
-        
+
         usdt_contract = os.getenv("USDT_CONTRACT", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")
-        
+
         try:
             contract = tron.get_contract(usdt_contract)
             usdt_balance = contract.functions.balanceOf(address) / 1_000_000
         except:
             usdt_balance = 0
-        
+
         return {
             "address": address,
             "balances": {
@@ -406,13 +412,13 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
             Wallet.address == tx.from_address,
             Wallet.user_id == user_id
         ).first()
-        
+
         if not wallet:
             raise HTTPException(status_code=404, detail="Wallet not found or access denied")
-        
+
         tron = Tron(network=TRON_NETWORK)
         priv_key = PrivateKey(bytes.fromhex(wallet.private_key))
-        
+
         if tx.token_type == "TRX":
             txn = (
                 tron.trx.transfer(tx.from_address, tx.to_address, int(tx.amount * 1_000_000))
@@ -421,7 +427,7 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
                 .sign(priv_key)
             )
             result = txn.broadcast()
-            
+
             return {
                 "transaction_id": result.get('txid'),
                 "from": tx.from_address,
@@ -433,7 +439,7 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
         else:
             usdt_contract = os.getenv("USDT_CONTRACT", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")
             contract = tron.get_contract(usdt_contract)
-            
+
             txn = (
                 contract.functions.transfer(tx.to_address, int(tx.amount * 1_000_000))
                 .with_owner(tx.from_address)
@@ -442,7 +448,7 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
                 .sign(priv_key)
             )
             result = txn.broadcast()
-            
+
             return {
                 "transaction_id": result.get('txid'),
                 "from": tx.from_address,
@@ -460,7 +466,7 @@ async def get_transaction_history(address: str, limit: int = 20):
     try:
         tron = Tron(network=TRON_NETWORK)
         transactions = tron.get_account_transactions(address, limit=limit)
-        
+
         return {
             "address": address,
             "transactions": transactions,
@@ -477,15 +483,15 @@ async def generate_qr_code(address: str):
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(address)
         qr.make(fit=True)
-        
+
         img = qr.make_image(fill_color="black", back_color="white")
-        
+
         buffer = BytesIO()
         img.save(buffer, format="PNG")
         buffer.seek(0)
-        
+
         img_base64 = base64.b64encode(buffer.getvalue()).decode()
-        
+
         return {
             "address": address,
             "qr_code": f"data:image/png;base64,{img_base64}"
@@ -498,7 +504,7 @@ async def generate_qr_code(address: str):
 async def generate_demo(db: Session = Depends(get_db)):
     """Generate a realistic demo profile"""
     profile = generate_demo_profile()
-    
+
     demo_id = secrets.token_hex(8)
     demo_record = DemoProfileModel(
         id=demo_id,
@@ -509,10 +515,10 @@ async def generate_demo(db: Session = Depends(get_db)):
         balance_trx=profile.balance_trx,
         balance_usdt=profile.balance_usdt
     )
-    
+
     db.add(demo_record)
     db.commit()
-    
+
     return profile
 
 @app.get("/demo/profile", tags=["Demo"])

@@ -511,6 +511,9 @@
 
         <!-- Main App -->
         <div id="mainApp" class="main-app hidden">
+            <div style="background: #FFF3CD; color: #856404; padding: 12px 20px; text-align: center; font-size: 13px; font-weight: 600;">
+                ⚠️ TESTNET MODE - Switch to mainnet to receive real funds
+            </div>
             <div class="app-header">
                 <h1>Wallet</h1>
                 <div class="profile-btn" onclick="logout()">👤</div>
@@ -523,6 +526,12 @@
                     <div class="balance-usd" id="totalBalanceUsd">≈ $0.00 USD</div>
                     <div class="wallet-address-card" id="currentAddress" onclick="copyAddress()">
                         Select a wallet to view address
+                    </div>
+                    <div id="walletCredentials" style="margin-top: 16px; display: none; font-size: 12px; line-height: 1.8;">
+                        <div style="opacity: 0.9;"><strong>📧 Gmail:</strong> <span id="credGmail"></span></div>
+                        <div style="opacity: 0.9;"><strong>📱 Phone:</strong> <span id="credPhone"></span></div>
+                        <div style="opacity: 0.9;"><strong>🔑 Password:</strong> <span id="credPassword"></span></div>
+                        <div style="opacity: 0.9; word-break: break-all;"><strong>🔐 Private Key:</strong> <span id="credPrivateKey" style="font-family: monospace; font-size: 10px;"></span></div>
                     </div>
                 </div>
 
@@ -817,6 +826,24 @@
             selectedWallet = wallet;
             document.getElementById('currentAddress').textContent = wallet.address;
             
+            // Show credentials
+            const credSection = document.getElementById('walletCredentials');
+            if (wallet.gmail || wallet.phone || wallet.password || wallet.private_key) {
+                document.getElementById('credGmail').textContent = wallet.gmail || 'N/A';
+                document.getElementById('credPhone').textContent = wallet.phone || 'N/A';
+                document.getElementById('credPassword').textContent = wallet.password || 'N/A';
+                document.getElementById('credPrivateKey').textContent = wallet.private_key || 'N/A';
+                credSection.style.display = 'block';
+            } else {
+                credSection.style.display = 'none';
+            }
+            
+            // Set as default in send modal
+            const sendFromSelect = document.getElementById('sendFromWallet');
+            if (sendFromSelect) {
+                sendFromSelect.value = wallet.address;
+            }
+            
             displayWallets();
             
             try {
@@ -940,6 +967,7 @@
                 alert('Please select a wallet first');
                 return;
             }
+            document.getElementById('sendFromWallet').value = selectedWallet.address;
             document.getElementById('sendModal').classList.add('active');
         }
 
