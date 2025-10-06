@@ -44,7 +44,8 @@ if not SECRET_KEY:
     raise ValueError("SESSION_SECRET environment variable must be set for secure JWT token generation")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
-TRON_NETWORK = os.getenv("TRON_NETWORK", "mainnet") # Changed to mainnet
+TRON_NETWORK = os.getenv("TRON_NETWORK", "mainnet")
+USDT_CONTRACT = os.getenv("USDT_CONTRACT", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")  # USDT-TRC20 mainnet
 
 # Pydantic Models
 class UserRegister(BaseModel):
@@ -397,10 +398,8 @@ async def get_balance(address: str):
     except Exception:
         trx_balance = 0
 
-    usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
-
     try:
-        contract = tron.get_contract(usdt_contract)
+        contract = tron.get_contract(USDT_CONTRACT)
         usdt_balance = contract.functions.balanceOf(address) / 1_000_000
     except Exception:
         usdt_balance = 0
@@ -447,8 +446,7 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
                 "status": "broadcasted"
             }
         else:
-            usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
-            contract = tron.get_contract(usdt_contract)
+            contract = tron.get_contract(USDT_CONTRACT)
 
             txn = (
                 contract.functions.transfer(tx.to_address, int(tx.amount * 1_000_000))
