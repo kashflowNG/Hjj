@@ -1,4 +1,3 @@
-
 # 🚀 TRON Wallet - Complete Mobile App Backend + Demo UI
 
 A full-stack TRON cryptocurrency wallet with REST API backend and interactive web demo. Supports TRX and USDT-TRC20 tokens with complete wallet management, transactions, and demo mode.
@@ -42,27 +41,29 @@ A full-stack TRON cryptocurrency wallet with REST API backend and interactive we
 
 ## 🚀 Quick Start
 
-### 1. Run the Application
+1. **Clone or fork this repository**
+2. **Install dependencies** (handled automatically by Replit)
+3. **Configure environment variables:**
+   - Copy `.env.example` to `.env`
+   - Add your `DATABASE_URL` (PostgreSQL connection string)
+   - Update `SECRET_KEY` with a secure random string
+   - Set `TRON_NETWORK` to `mainnet` for production
+4. **Run the API:**
+   ```bash
+   python main.py
+   ```
+   The database tables will be created automatically on first run.
+5. **Access the web UI:** Open the webview or visit `http://0.0.0.0:5000`
+6. **API Documentation:** Visit `/docs` for interactive Swagger UI
 
-Click the **Run** button at the top of the Repl, or use:
+## 💾 Database
 
-```bash
-python main.py
-```
+The app uses PostgreSQL for persistent storage:
+- **Users:** Authentication (PIN/password)
+- **Wallets:** Private keys, addresses, metadata
+- **Demo Profiles:** Generated demo data
 
-### 2. Access the Demo UI
-
-The demo interface will automatically open at:
-```
-https://<your-repl-name>.<your-username>.repl.co
-```
-
-### 3. Explore the API
-
-Interactive API documentation:
-```
-https://<your-repl-name>.<your-username>.repl.co/docs
-```
+Tables are automatically created when the app starts.
 
 ## 📖 How to Use
 
@@ -79,12 +80,13 @@ https://<your-repl-name>.<your-username>.repl.co/docs
 
 ### Authentication
 
-1. Go to **"Auth"** tab
-2. **Register:**
+1. **Login first** (Auth tab)
+2. Go to **"Auth"** tab
+3. **Register:**
    - Enter a PIN (4-6 digits)
    - Optionally add a password
    - Click "Register"
-3. **Login:**
+4. **Login:**
    - Enter your PIN
    - Enter password (if set)
    - Click "Login"
