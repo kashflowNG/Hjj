@@ -212,9 +212,21 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
 # Wallet Endpoints
 @app.post("/wallets/create", tags=["Wallets"])
 async def create_wallet(wallet: WalletCreate, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
-    """Create a new TRON wallet"""
+    """Create a new TRON wallet with Gmail, phone, and password"""
     tron = Tron(network=TRON_NETWORK)
     account = tron.generate_address()
+    
+    # Generate realistic credentials
+    countries = ["en_US", "en_GB", "en_AU"]
+    fake_locale = Faker(fake.random.choice(countries))
+    
+    username = fake_locale.user_name()
+    gmail = f"{username}@gmail.com"
+    phone = fake_locale.phone_number()
+    password = ''.join(fake.random.choices(
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$', 
+        k=8
+    ))
     
     wallet_id = secrets.token_hex(8)
     new_wallet = Wallet(
@@ -234,6 +246,10 @@ async def create_wallet(wallet: WalletCreate, user_id: str = Depends(verify_toke
         "wallet_id": new_wallet.id,
         "name": new_wallet.name,
         "address": new_wallet.address,
+        "private_key": new_wallet.private_key,
+        "gmail": gmail,
+        "phone": phone,
+        "password": password,
         "created_at": new_wallet.created_at.isoformat()
     }
 
@@ -277,6 +293,7 @@ async def list_wallets(user_id: str = Depends(verify_token), db: Session = Depen
                 "wallet_id": w.id,
                 "name": w.name,
                 "address": w.address,
+                "is_used": w.is_used if hasattr(w, 'is_used') else False,
                 "created_at": w.created_at.isoformat()
             }
             for w in wallets
@@ -331,6 +348,26 @@ async def export_private_key(wallet_id: str, user_id: str = Depends(verify_token
     return {
         "private_key": wallet.private_key,
         "address": wallet.address
+    }
+
+@app.patch("/wallets/{wallet_id}/mark-used", tags=["Wallets"])
+async def mark_wallet_used(wallet_id: str, used: bool, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):
+    """Mark wallet as used or unused"""
+    wallet = db.query(Wallet).filter(Wallet.id == wallet_id).first()
+    
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    
+    if wallet.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    wallet.is_used = used
+    db.commit()
+    
+    return {
+        "wallet_id": wallet.id,
+        "is_used": wallet.is_used,
+        "message": f"Wallet marked as {'used' if used else 'unused'}"
     }
 
 # Balance & Transaction Endpoints

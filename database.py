@@ -36,6 +36,7 @@ class Wallet(Base):
     address = Column(String, nullable=False, index=True)
     private_key = Column(String, nullable=False)
     hex_address = Column(String, nullable=True)
+    is_used = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     user = relationship("User", back_populates="wallets")

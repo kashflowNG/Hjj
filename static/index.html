@@ -746,12 +746,59 @@
                 container.innerHTML = wallets.map((wallet, index) => `
                     <div class="wallet-item ${selectedWallet && selectedWallet.wallet_id === wallet.wallet_id ? 'selected' : ''}" onclick='selectWallet(${JSON.stringify(wallet)})'>
                         <div class="wallet-item-header">
-                            <div class="wallet-name">💎 ${wallet.name}</div>
+                            <div class="wallet-name">💎 ${wallet.name} ${wallet.is_used ? '✓' : ''}</div>
                             ${index === 0 ? '<div class="wallet-badge">Primary</div>' : ''}
                         </div>
                         <div class="wallet-address">${wallet.address.substring(0, 16)}...${wallet.address.slice(-8)}</div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px;">
+                            <button onclick="event.stopPropagation(); toggleUsed('${wallet.wallet_id}', ${!wallet.is_used})" style="flex: 1; padding: 8px; background: ${wallet.is_used ? '#FFE5E5' : '#D1F4E0'}; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                ${wallet.is_used ? 'Mark Unused' : 'Mark Used'}
+                            </button>
+                            <button onclick="event.stopPropagation(); deleteWallet('${wallet.wallet_id}')" style="flex: 1; padding: 8px; background: #FFE5E5; color: #D32F2F; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 `).join('');
+            }
+        }
+
+        async function toggleUsed(walletId, used) {
+            try {
+                const response = await fetch(`/wallets/${walletId}/mark-used?used=${used}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadWallets();
+                }
+            } catch (error) {
+                console.error('Error marking wallet:', error);
+            }
+        }
+
+        async function deleteWallet(walletId) {
+            if (!confirm('Are you sure you want to delete this wallet?')) return;
+            
+            try {
+                const response = await fetch(`/wallets/${walletId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    if (selectedWallet && selectedWallet.wallet_id === walletId) {
+                        selectedWallet = null;
+                    }
+                    loadWallets();
+                }
+            } catch (error) {
+                console.error('Error deleting wallet:', error);
             }
         }
 
@@ -803,12 +850,20 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showMessage('createMessage', 'Wallet created successfully!', 'success');
+                    const details = `
+                        <div style="text-align: left; margin: 20px 0;">
+                            <p><strong>Gmail:</strong> ${data.gmail}</p>
+                            <p><strong>Phone:</strong> ${data.phone}</p>
+                            <p><strong>Password:</strong> ${data.password}</p>
+                            <p><strong>Address:</strong> ${data.address}</p>
+                            <p><strong>Private Key:</strong> ${data.private_key.substring(0, 20)}...</p>
+                        </div>
+                    `;
+                    showMessage('createMessage', 'Wallet created successfully!' + details, 'success');
                     document.getElementById('newWalletName').value = '';
                     setTimeout(() => {
-                        closeModal('createWalletModal');
                         loadWallets();
-                    }, 1000);
+                    }, 5000);
                 } else {
                     showMessage('createMessage', data.detail, 'error');
                 }
