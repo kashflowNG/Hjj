@@ -13,9 +13,9 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
-            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #F5F5F7;
+            color: #1D1D1F;
             min-height: 100vh;
         }
 
@@ -23,46 +23,55 @@
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #0D0D0D;
-            position: relative;
+            background: #FFFFFF;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
         }
 
-        .header {
-            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(255, 0, 19, 0.3);
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
+        /* Auth Screen */
         .auth-screen {
-            padding: 40px 20px;
+            padding: 60px 24px 24px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: calc(100vh - 64px);
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .auth-logo {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
+        }
+
+        .auth-logo .icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .auth-logo h2 {
-            font-size: 32px;
-            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
             margin-bottom: 8px;
         }
 
         .auth-logo p {
-            color: #B3B3B3;
-            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            font-size: 15px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
 
         .input-group {
@@ -72,28 +81,34 @@
         .input-group label {
             display: block;
             margin-bottom: 8px;
-            color: #B3B3B3;
-            font-size: 14px;
-            font-weight: 500;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .input-group input {
+        .input-group input,
+        .input-group select {
             width: 100%;
-            padding: 16px;
-            background: #1A1A1A;
-            border: 1px solid #333333;
+            padding: 14px 16px;
+            background: #F8F9FA;
+            border: 2px solid transparent;
             border-radius: 12px;
-            color: white;
+            color: #1D1D1F;
             font-size: 16px;
+            transition: all 0.3s;
         }
 
-        .input-group input:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
-            border-color: #FF0013;
+            border-color: #667eea;
+            background: white;
         }
 
         .btn {
-            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 16px;
@@ -102,94 +117,156 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
         .btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
         .btn-secondary {
-            background: #2E2E2E;
+            background: #F8F9FA;
+            color: #667eea;
             margin-top: 12px;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #E9ECEF;
+        }
+
+        /* Main App */
+        .main-app {
+            background: #F5F5F7;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .app-header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1D1D1F;
+        }
+
+        .profile-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .wallet-home {
-            padding: 20px;
+            padding: 0 20px 20px;
         }
 
-        .balance-card {
-            background: linear-gradient(135deg, #2E2E2E 0%, #1A1A1A 100%);
-            padding: 30px 20px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 24px;
+        .balance-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            padding: 32px 24px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            color: white;
         }
 
         .balance-label {
-            color: #B3B3B3;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.9;
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .balance-amount {
-            font-size: 48px;
+            font-size: 40px;
             font-weight: 700;
-            color: #FF0013;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            letter-spacing: -1px;
         }
 
         .balance-usd {
-            color: #B3B3B3;
             font-size: 16px;
+            opacity: 0.8;
         }
 
-        .wallet-address {
-            background: #1A1A1A;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 24px;
+        .wallet-address-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 16px;
             text-align: center;
-            font-family: monospace;
-            font-size: 12px;
-            color: #B3B3B3;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 11px;
             word-break: break-all;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .wallet-address-card:hover {
+            background: rgba(255,255,255,0.2);
         }
 
         .action-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .action-btn {
-            background: #1A1A1A;
-            border: 1px solid #333333;
-            padding: 20px;
-            border-radius: 12px;
+            background: white;
+            border: none;
+            padding: 20px 16px;
+            border-radius: 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .action-btn:active {
-            transform: scale(0.98);
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         .action-btn-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
         }
 
         .action-btn-text {
-            color: #FFFFFF;
-            font-size: 14px;
+            color: #1D1D1F;
+            font-size: 15px;
             font-weight: 600;
-        }
-
-        .wallets-section {
-            margin-top: 32px;
         }
 
         .section-header {
@@ -201,44 +278,72 @@
 
         .section-title {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
+            color: #1D1D1F;
         }
 
         .add-wallet-btn {
-            background: #FF0013;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .wallet-item {
-            background: #1A1A1A;
-            padding: 16px;
-            border-radius: 12px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
             margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
         }
 
-        .wallet-item:active {
-            transform: scale(0.98);
+        .wallet-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .wallet-item.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .wallet-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         .wallet-name {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 8px;
+            color: #1D1D1F;
         }
 
-        .wallet-balance {
-            color: #B3B3B3;
-            font-size: 14px;
+        .wallet-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
         }
 
+        .wallet-address {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            color: #86868B;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -246,10 +351,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .modal.active {
@@ -257,13 +363,14 @@
         }
 
         .modal-content {
-            background: #1A1A1A;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 400px;
-            width: 90%;
-            max-height: 80vh;
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 85vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .modal-header {
@@ -274,27 +381,39 @@
         }
 
         .modal-title {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1D1D1F;
         }
 
         .close-btn {
-            background: none;
+            background: #F8F9FA;
             border: none;
-            color: #B3B3B3;
-            font-size: 24px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
             cursor: pointer;
+            color: #86868B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: #E9ECEF;
         }
 
         .qr-container {
             text-align: center;
-            padding: 20px;
+            padding: 20px 0;
         }
 
         .qr-container img {
-            max-width: 250px;
-            border-radius: 12px;
+            max-width: 240px;
+            border-radius: 16px;
             margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .hidden {
@@ -302,66 +421,66 @@
         }
 
         .message {
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
             margin-bottom: 16px;
             text-align: center;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .message.success {
-            background: #00D66F;
-            color: white;
+            background: #D1F4E0;
+            color: #0D7D4D;
         }
 
         .message.error {
-            background: #FF0013;
-            color: white;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 480px;
-            width: 100%;
-            background: #1A1A1A;
-            border-top: 1px solid #333333;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            padding: 12px 0;
-        }
-
-        .nav-item {
-            text-align: center;
-            color: #B3B3B3;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .nav-item.active {
-            color: #FF0013;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 12px;
+            background: #FFE5E5;
+            color: #D32F2F;
         }
 
         .logout-btn {
-            background: #2E2E2E;
-            color: #FF0013;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
+            background: white;
+            color: #D32F2F;
+            border: 2px solid #FFE5E5;
+            padding: 14px;
+            border-radius: 12px;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 20px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 15px;
+        }
+
+        .logout-btn:hover {
+            background: #FFE5E5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #86868B;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .wallet-item, .action-btn {
+            animation: fadeIn 0.3s ease-out;
         }
     </style>
 </head>
@@ -370,62 +489,63 @@
         <!-- Auth Screen -->
         <div id="authScreen" class="auth-screen">
             <div class="auth-logo">
-                <h2>🚀 TRON Wallet</h2>
-                <p>Your secure crypto wallet</p>
+                <div class="icon">💎</div>
+                <h2>TRON Wallet</h2>
+                <p>Secure & Simple Crypto Management</p>
             </div>
 
-            <div id="authForm">
+            <div class="auth-card">
                 <div class="input-group">
-                    <label>PIN (4-6 digits)</label>
-                    <input type="password" id="authPin" placeholder="Enter PIN" maxlength="6">
+                    <label>PIN Code</label>
+                    <input type="password" id="authPin" placeholder="Enter 4-6 digit PIN" maxlength="6">
                 </div>
                 <div class="input-group">
-                    <label>Password (optional)</label>
-                    <input type="password" id="authPassword" placeholder="Optional password">
+                    <label>Password (Optional)</label>
+                    <input type="password" id="authPassword" placeholder="Additional security layer">
                 </div>
                 <div id="authMessage"></div>
-                <button class="btn" onclick="login()">Login</button>
-                <button class="btn btn-secondary" onclick="register()">Create Account</button>
+                <button class="btn" onclick="login()">Sign In</button>
+                <button class="btn btn-secondary" onclick="register()">Create New Account</button>
             </div>
         </div>
 
         <!-- Main App -->
-        <div id="mainApp" class="hidden">
-            <div class="header">
-                <h1>TRON Wallet</h1>
+        <div id="mainApp" class="main-app hidden">
+            <div class="app-header">
+                <h1>Wallet</h1>
+                <div class="profile-btn" onclick="logout()">👤</div>
             </div>
 
             <div class="wallet-home">
-                <div class="balance-card">
+                <div class="balance-section">
                     <div class="balance-label">Total Balance</div>
                     <div class="balance-amount" id="totalBalance">0.00</div>
-                    <div class="balance-usd" id="totalBalanceUsd">$0.00 USD</div>
-                </div>
-
-                <div class="wallet-address" id="currentAddress">
-                    Select a wallet
+                    <div class="balance-usd" id="totalBalanceUsd">≈ $0.00 USD</div>
+                    <div class="wallet-address-card" id="currentAddress" onclick="copyAddress()">
+                        Select a wallet to view address
+                    </div>
                 </div>
 
                 <div class="action-buttons">
-                    <div class="action-btn" onclick="showSendModal()">
+                    <button class="action-btn" onclick="showSendModal()">
                         <div class="action-btn-icon">↑</div>
                         <div class="action-btn-text">Send</div>
-                    </div>
-                    <div class="action-btn" onclick="showReceiveModal()">
+                    </button>
+                    <button class="action-btn" onclick="showReceiveModal()">
                         <div class="action-btn-icon">↓</div>
                         <div class="action-btn-text">Receive</div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="wallets-section">
                     <div class="section-header">
                         <div class="section-title">My Wallets</div>
-                        <button class="add-wallet-btn" onclick="showCreateWalletModal()">+ Add</button>
+                        <button class="add-wallet-btn" onclick="showCreateWalletModal()">+ Add Wallet</button>
                     </div>
                     <div id="walletsList"></div>
                 </div>
 
-                <button class="logout-btn" onclick="logout()">Logout</button>
+                <button class="logout-btn" onclick="logout()">Sign Out</button>
             </div>
         </div>
 
@@ -434,31 +554,29 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-title">Send Crypto</div>
-                    <button class="close-btn" onclick="closeModal('sendModal')">&times;</button>
+                    <button class="close-btn" onclick="closeModal('sendModal')">×</button>
                 </div>
                 <div class="input-group">
                     <label>From Wallet</label>
-                    <select id="sendFromWallet" class="input-group input" style="padding: 16px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; color: white;">
-                        <option value="">Select wallet</option>
-                    </select>
+                    <select id="sendFromWallet"></select>
                 </div>
                 <div class="input-group">
-                    <label>To Address</label>
-                    <input type="text" id="sendToAddress" placeholder="Recipient address">
+                    <label>Recipient Address</label>
+                    <input type="text" id="sendToAddress" placeholder="Enter TRON address">
                 </div>
                 <div class="input-group">
                     <label>Amount</label>
                     <input type="number" id="sendAmount" placeholder="0.00" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label>Token</label>
-                    <select id="sendToken" class="input-group input" style="padding: 16px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; color: white;">
+                    <label>Asset</label>
+                    <select id="sendToken">
                         <option value="TRX">TRX</option>
-                        <option value="USDT">USDT</option>
+                        <option value="USDT">USDT-TRC20</option>
                     </select>
                 </div>
                 <div id="sendMessage"></div>
-                <button class="btn" onclick="sendTransaction()">Send</button>
+                <button class="btn" onclick="sendTransaction()">Send Now</button>
             </div>
         </div>
 
@@ -467,11 +585,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-title">Receive Crypto</div>
-                    <button class="close-btn" onclick="closeModal('receiveModal')">&times;</button>
+                    <button class="close-btn" onclick="closeModal('receiveModal')">×</button>
                 </div>
                 <div class="qr-container">
                     <div id="qrCode"></div>
-                    <div id="receiveAddress" style="color: #B3B3B3; font-size: 12px; word-break: break-all; margin-top: 12px;"></div>
+                    <div id="receiveAddress" style="color: #86868B; font-size: 12px; font-family: monospace; word-break: break-all; margin-top: 12px;"></div>
+                    <button class="btn" onclick="copyReceiveAddress()" style="margin-top: 20px;">Copy Address</button>
                 </div>
             </div>
         </div>
@@ -480,12 +599,12 @@
         <div id="createWalletModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="modal-title">Create Wallet</div>
-                    <button class="close-btn" onclick="closeModal('createWalletModal')">&times;</button>
+                    <div class="modal-title">Create New Wallet</div>
+                    <button class="close-btn" onclick="closeModal('createWalletModal')">×</button>
                 </div>
                 <div class="input-group">
                     <label>Wallet Name</label>
-                    <input type="text" id="newWalletName" placeholder="My Wallet">
+                    <input type="text" id="newWalletName" placeholder="e.g., Main Wallet">
                 </div>
                 <div id="createMessage"></div>
                 <button class="btn" onclick="createWallet()">Create Wallet</button>
@@ -519,6 +638,11 @@
             const pin = document.getElementById('authPin').value;
             const password = document.getElementById('authPassword').value;
             
+            if (!pin || pin.length < 4) {
+                showMessage('authMessage', 'PIN must be at least 4 digits', 'error');
+                return;
+            }
+            
             try {
                 const response = await fetch('/auth/register', {
                     method: 'POST',
@@ -540,13 +664,18 @@
                     showMessage('authMessage', data.detail, 'error');
                 }
             } catch (error) {
-                showMessage('authMessage', 'Error: ' + error.message, 'error');
+                showMessage('authMessage', 'Connection error. Please try again.', 'error');
             }
         }
 
         async function login() {
             const pin = document.getElementById('authPin').value;
             const password = document.getElementById('authPassword').value;
+            
+            if (!pin) {
+                showMessage('authMessage', 'Please enter your PIN', 'error');
+                return;
+            }
             
             try {
                 const response = await fetch('/auth/login', {
@@ -560,25 +689,27 @@
                 if (response.ok) {
                     authToken = data.access_token;
                     localStorage.setItem('authToken', authToken);
-                    showMessage('authMessage', 'Login successful!', 'success');
+                    showMessage('authMessage', 'Welcome back!', 'success');
                     setTimeout(() => {
                         showMainApp();
                         loadWallets();
-                    }, 1000);
+                    }, 800);
                 } else {
                     showMessage('authMessage', data.detail, 'error');
                 }
             } catch (error) {
-                showMessage('authMessage', 'Error: ' + error.message, 'error');
+                showMessage('authMessage', 'Connection error. Please try again.', 'error');
             }
         }
 
         function logout() {
-            authToken = null;
-            localStorage.removeItem('authToken');
-            wallets = [];
-            selectedWallet = null;
-            showAuthScreen();
+            if (confirm('Are you sure you want to sign out?')) {
+                authToken = null;
+                localStorage.removeItem('authToken');
+                wallets = [];
+                selectedWallet = null;
+                showAuthScreen();
+            }
         }
 
         async function loadWallets() {
@@ -605,12 +736,20 @@
         function displayWallets() {
             const container = document.getElementById('walletsList');
             if (wallets.length === 0) {
-                container.innerHTML = '<p style="color: #B3B3B3; text-align: center; padding: 20px;">No wallets yet. Create one to get started!</p>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💼</div>
+                        <div class="empty-state-text">No wallets yet<br>Create your first wallet to get started</div>
+                    </div>
+                `;
             } else {
-                container.innerHTML = wallets.map(wallet => `
-                    <div class="wallet-item" onclick='selectWallet(${JSON.stringify(wallet)})'>
-                        <div class="wallet-name">💼 ${wallet.name}</div>
-                        <div class="wallet-balance">${wallet.address.substring(0, 12)}...${wallet.address.slice(-6)}</div>
+                container.innerHTML = wallets.map((wallet, index) => `
+                    <div class="wallet-item ${selectedWallet && selectedWallet.wallet_id === wallet.wallet_id ? 'selected' : ''}" onclick='selectWallet(${JSON.stringify(wallet)})'>
+                        <div class="wallet-item-header">
+                            <div class="wallet-name">💎 ${wallet.name}</div>
+                            ${index === 0 ? '<div class="wallet-badge">Primary</div>' : ''}
+                        </div>
+                        <div class="wallet-address">${wallet.address.substring(0, 16)}...${wallet.address.slice(-8)}</div>
                     </div>
                 `).join('');
             }
@@ -622,7 +761,7 @@
             wallets.forEach(wallet => {
                 const option = document.createElement('option');
                 option.value = wallet.address;
-                option.textContent = `${wallet.name} (${wallet.address.substring(0, 8)}...)`;
+                option.textContent = `${wallet.name} (${wallet.address.substring(0, 10)}...)`;
                 select.appendChild(option);
             });
         }
@@ -631,14 +770,17 @@
             selectedWallet = wallet;
             document.getElementById('currentAddress').textContent = wallet.address;
             
+            displayWallets();
+            
             try {
                 const response = await fetch(`/balance/${wallet.address}`);
                 const data = await response.json();
                 
                 if (response.ok) {
                     const trxBalance = data.balances.TRX || 0;
+                    const usdtBalance = data.balances.USDT || 0;
                     document.getElementById('totalBalance').textContent = trxBalance.toFixed(2) + ' TRX';
-                    document.getElementById('totalBalanceUsd').textContent = (data.balances.USDT || 0).toFixed(2) + ' USDT';
+                    document.getElementById('totalBalanceUsd').textContent = '≈ $' + usdtBalance.toFixed(2) + ' USDT';
                 }
             } catch (error) {
                 console.error('Error fetching balance:', error);
@@ -671,7 +813,7 @@
                     showMessage('createMessage', data.detail, 'error');
                 }
             } catch (error) {
-                showMessage('createMessage', 'Error: ' + error.message, 'error');
+                showMessage('createMessage', 'Error creating wallet', 'error');
             }
         }
 
@@ -713,7 +855,7 @@
                     showMessage('sendMessage', data.detail, 'error');
                 }
             } catch (error) {
-                showMessage('sendMessage', 'Error: ' + error.message, 'error');
+                showMessage('sendMessage', 'Transaction failed', 'error');
             }
         }
 
@@ -752,6 +894,20 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
+        }
+
+        function copyAddress() {
+            if (selectedWallet) {
+                navigator.clipboard.writeText(selectedWallet.address);
+                alert('Address copied to clipboard!');
+            }
+        }
+
+        function copyReceiveAddress() {
+            if (selectedWallet) {
+                navigator.clipboard.writeText(selectedWallet.address);
+                alert('Address copied to clipboard!');
+            }
         }
 
         function showMessage(elementId, message, type) {
