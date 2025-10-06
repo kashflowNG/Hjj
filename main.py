@@ -13,6 +13,8 @@ import base64
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, EmailStr
 import jwt
 from passlib.context import CryptContext
@@ -128,10 +130,17 @@ def generate_demo_profile() -> DemoProfile:
         balance_usdt=balance_usdt
     )
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # API Endpoints
 
 @app.get("/")
 async def root():
+    return FileResponse("static/index.html")
+
+@app.get("/api")
+async def api_info():
     return {
         "message": "TRON Wallet API",
         "version": "1.0.0",

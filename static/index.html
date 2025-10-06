@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRON Wallet - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #B3B3B3;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #FF0013;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(0.98);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: #2E2E2E;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #B3B3B3;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0D0D0D;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #FF0013;
+        }
+
+        .demo-data {
+            background: #2E2E2E;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .demo-data strong {
+            color: #FF0013;
+        }
+
+        .success {
+            background: #00D66F;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .error {
+            background: #FF0013;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .wallet-item {
+            background: #2E2E2E;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .wallet-item h3 {
+            color: #FF0013;
+            margin-bottom: 8px;
+        }
+
+        .wallet-item p {
+            color: #B3B3B3;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #2E2E2E 0%, #1A1A1A 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FF0013;
+            margin: 10px 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #2E2E2E;
+            border: none;
+            border-radius: 8px;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
+            color: white;
+        }
+
+        #qrCode {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #qrCode img {
+            max-width: 300px;
+            border-radius: 12px;
+        }
+
+        .copy-btn {
+            background: #2E2E2E;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #3E3E3E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 TRON Wallet</h1>
+            <p>Full-Stack Demo - API Ready for Mobile Integration</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('demo')">Demo Mode</button>
+            <button class="tab" onclick="showTab('auth')">Auth</button>
+            <button class="tab" onclick="showTab('wallets')">Wallets</button>
+            <button class="tab" onclick="showTab('transactions')">Transactions</button>
+        </div>
+
+        <!-- Demo Tab -->
+        <div id="demoTab" class="tab-content">
+            <div class="card">
+                <h2>🎭 Demo Profile Generator</h2>
+                <p style="color: #B3B3B3; margin-bottom: 20px;">
+                    Generate realistic fake profiles with USA/UK/Australia phone numbers, Gmail-style emails, and demo wallet balances.
+                </p>
+                <button class="btn" onclick="generateDemo()">Generate Demo Profile</button>
+                <div id="demoResult" class="hidden"></div>
+            </div>
+
+            <div class="card">
+                <h2>📚 API Documentation</h2>
+                <p style="color: #B3B3B3; margin-bottom: 10px;">
+                    Complete REST API documentation available at:
+                </p>
+                <a href="/docs" target="_blank" style="color: #FF0013; text-decoration: none;">
+                    <button class="btn btn-secondary">Open API Docs (Swagger)</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Auth Tab -->
+        <div id="authTab" class="tab-content hidden">
+            <div class="card">
+                <h2>🔐 Register</h2>
+                <div class="input-group">
+                    <label>PIN (4-6 digits)</label>
+                    <input type="password" id="registerPin" placeholder="1234">
+                </div>
+                <div class="input-group">
+                    <label>Password (optional)</label>
+                    <input type="password" id="registerPassword" placeholder="Optional password">
+                </div>
+                <button class="btn" onclick="register()">Register</button>
+                <div id="registerResult"></div>
+            </div>
+
+            <div class="card">
+                <h2>🔓 Login</h2>
+                <div class="input-group">
+                    <label>PIN</label>
+                    <input type="password" id="loginPin" placeholder="1234">
+                </div>
+                <div class="input-group">
+                    <label>Password (if set)</label>
+                    <input type="password" id="loginPassword" placeholder="Password">
+                </div>
+                <button class="btn" onclick="login()">Login</button>
+                <div id="loginResult"></div>
+            </div>
+        </div>
+
+        <!-- Wallets Tab -->
+        <div id="walletsTab" class="tab-content hidden">
+            <div class="card">
+                <h2>💼 Create Wallet</h2>
+                <div class="input-group">
+                    <label>Wallet Name</label>
+                    <input type="text" id="walletName" placeholder="My Main Wallet">
+                </div>
+                <button class="btn" onclick="createWallet()">Create New Wallet</button>
+                <div id="createWalletResult"></div>
+            </div>
+
+            <div class="card">
+                <h2>📋 My Wallets</h2>
+                <button class="btn btn-secondary" onclick="listWallets()">Refresh Wallets</button>
+                <div id="walletsList"></div>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactionsTab" class="tab-content hidden">
+            <div class="card">
+                <h2>💰 Check Balance</h2>
+                <div class="input-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="balanceAddress" placeholder="TJRabPrwbZy45sbavfcjinPJC18kjpRTv8">
+                </div>
+                <button class="btn" onclick="checkBalance()">Check Balance</button>
+                <div id="balanceResult"></div>
+            </div>
+
+            <div class="card">
+                <h2>📱 Generate QR Code</h2>
+                <div class="input-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="qrAddress" placeholder="TJRabPrwbZy45sbavfcjinPJC18kjpRTv8">
+                </div>
+                <button class="btn" onclick="generateQR()">Generate QR Code</button>
+                <div id="qrCode"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('authToken');
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        async function generateDemo() {
+            try {
+                const response = await fetch('/demo/generate');
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('demoResult');
+                resultDiv.innerHTML = `
+                    <div class="success" style="margin-top: 20px;">Demo Profile Generated!</div>
+                    <div class="demo-data"><strong>📧 Email:</strong> ${data.email} <button class="copy-btn" onclick="copyText('${data.email}')">Copy</button></div>
+                    <div class="demo-data"><strong>📱 Phone:</strong> ${data.phone} <button class="copy-btn" onclick="copyText('${data.phone}')">Copy</button></div>
+                    <div class="demo-data"><strong>🔑 Password:</strong> ${data.password} <button class="copy-btn" onclick="copyText('${data.password}')">Copy</button></div>
+                    <div class="demo-data"><strong>💼 Wallet:</strong> ${data.wallet_address} <button class="copy-btn" onclick="copyText('${data.wallet_address}')">Copy</button></div>
+                    <div class="demo-data"><strong>💰 TRX:</strong> ${data.balance_trx}</div>
+                    <div class="demo-data"><strong>💵 USDT:</strong> ${data.balance_usdt}</div>
+                `;
+                resultDiv.classList.remove('hidden');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function register() {
+            const pin = document.getElementById('registerPin').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin, password: password || null })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('authToken', authToken);
+                    document.getElementById('registerResult').innerHTML = `
+                        <div class="success">Registration successful! Token saved.</div>
+                        <div class="demo-data"><strong>User ID:</strong> ${data.user_id}</div>
+                    `;
+                } else {
+                    document.getElementById('registerResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('registerResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function login() {
+            const pin = document.getElementById('loginPin').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin, password: password || null })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('authToken', authToken);
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="success">Login successful! Token saved.</div>
+                        <div class="demo-data"><strong>User ID:</strong> ${data.user_id}</div>
+                    `;
+                } else {
+                    document.getElementById('loginResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function createWallet() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            const name = document.getElementById('walletName').value;
+            
+            try {
+                const response = await fetch('/wallets/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ name })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('createWalletResult').innerHTML = `
+                        <div class="success">Wallet created successfully!</div>
+                        <div class="demo-data"><strong>Name:</strong> ${data.name}</div>
+                        <div class="demo-data"><strong>Address:</strong> ${data.address} <button class="copy-btn" onclick="copyText('${data.address}')">Copy</button></div>
+                        <div class="demo-data"><strong>ID:</strong> ${data.wallet_id}</div>
+                    `;
+                } else {
+                    document.getElementById('createWalletResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('createWalletResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function listWallets() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/wallets', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const walletsDiv = document.getElementById('walletsList');
+                    if (data.wallets.length === 0) {
+                        walletsDiv.innerHTML = '<p style="color: #B3B3B3; margin-top: 16px;">No wallets found. Create one!</p>';
+                    } else {
+                        walletsDiv.innerHTML = data.wallets.map(wallet => `
+                            <div class="wallet-item">
+                                <h3>${wallet.name}</h3>
+                                <p><strong>Address:</strong> ${wallet.address} <button class="copy-btn" onclick="copyText('${wallet.address}')">Copy</button></p>
+                                <p><strong>Created:</strong> ${new Date(wallet.created_at).toLocaleString()}</p>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    alert('Error: ' + data.detail);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function checkBalance() {
+            const address = document.getElementById('balanceAddress').value;
+            
+            try {
+                const response = await fetch(`/balance/${address}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('balanceResult').innerHTML = `
+                        <div class="balance-card">
+                            <h3>Balance for ${address}</h3>
+                            <div class="balance-amount">${data.balances.TRX} TRX</div>
+                            <div style="color: #B3B3B3;">${data.balances.USDT} USDT</div>
+                            <p style="color: #666; font-size: 12px; margin-top: 10px;">Updated: ${new Date(data.updated_at).toLocaleString()}</p>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('balanceResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('balanceResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function generateQR() {
+            const address = document.getElementById('qrAddress').value;
+            
+            try {
+                const response = await fetch(`/qr/${address}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('qrCode').innerHTML = `
+                        <div style="margin-top: 20px;">
+                            <img src="${data.qr_code}" alt="QR Code">
+                            <p style="color: #B3B3B3; margin-top: 10px; word-break: break-all;">${data.address}</p>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + data.detail);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
