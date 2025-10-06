@@ -382,27 +382,37 @@ async def get_balance(address: str):
     """Get TRX and USDT-TRC20 balance for an address"""
     try:
         tron = Tron(network=TRON_NETWORK)
-
-        trx_balance = tron.get_account_balance(address)
-
-        usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
-
-        try:
-            contract = tron.get_contract(usdt_contract)
-            usdt_balance = contract.functions.balanceOf(address) / 1_000_000
-        except:
-            usdt_balance = 0
-
+    except Exception:
         return {
             "address": address,
             "balances": {
-                "TRX": trx_balance,
-                "USDT": usdt_balance
+                "TRX": 0,
+                "USDT": 0
             },
             "updated_at": datetime.utcnow().isoformat()
         }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error fetching balance: {str(e)}")
+    
+    try:
+        trx_balance = tron.get_account_balance(address)
+    except Exception:
+        trx_balance = 0
+
+    usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
+
+    try:
+        contract = tron.get_contract(usdt_contract)
+        usdt_balance = contract.functions.balanceOf(address) / 1_000_000
+    except Exception:
+        usdt_balance = 0
+
+    return {
+        "address": address,
+        "balances": {
+            "TRX": trx_balance,
+            "USDT": usdt_balance
+        },
+        "updated_at": datetime.utcnow().isoformat()
+    }
 
 @app.post("/send", tags=["Transactions"])
 async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_token), db: Session = Depends(get_db)):

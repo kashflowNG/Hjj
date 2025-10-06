@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: tron-wallet-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SESSION_SECRET
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: TRON_NETWORK
+        value: "mainnet"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tron-wallet-db
+          property: connectionString
+    autoDeploy: true
+
+databases:
+  - name: tron-wallet-db
+    plan: free
+    databaseName: tronwallet
+    user: tronwallet
