@@ -20,17 +20,11 @@ import jwt
 from passlib.context import CryptContext
 from tronpy import Tron
 from tronpy.keys import PrivateKey
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
+from database import get_db, init_db, User, Wallet
 
-from database import get_db, init_db, User, Wallet, DemoProfile as DemoProfileModel
-
-load_dotenv()
-
-# Initialize database
 init_db()
 
-# Initialize
 app = FastAPI(title="TRON Wallet API", version="1.0.0")
 security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -46,7 +40,7 @@ app.add_middleware(
 )
 
 # Configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+SECRET_KEY = os.getenv("SESSION_SECRET", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 TRON_NETWORK = os.getenv("TRON_NETWORK", "nile")
@@ -98,7 +92,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         return user_id
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 def generate_demo_profile() -> DemoProfile:
