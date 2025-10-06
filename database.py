@@ -36,6 +36,9 @@ class Wallet(Base):
     address = Column(String, nullable=False, index=True)
     private_key = Column(String, nullable=False)
     hex_address = Column(String, nullable=True)
+    gmail = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    password = Column(String, nullable=True)
     is_used = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     

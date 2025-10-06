@@ -44,7 +44,7 @@ if not SECRET_KEY:
     raise ValueError("SESSION_SECRET environment variable must be set for secure JWT token generation")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
-TRON_NETWORK = os.getenv("TRON_NETWORK", "nile")
+TRON_NETWORK = os.getenv("TRON_NETWORK", "mainnet") # Changed to mainnet
 
 # Pydantic Models
 class UserRegister(BaseModel):
@@ -385,7 +385,7 @@ async def get_balance(address: str):
 
         trx_balance = tron.get_account_balance(address)
 
-        usdt_contract = os.getenv("USDT_CONTRACT", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")
+        usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
 
         try:
             contract = tron.get_contract(usdt_contract)
@@ -437,7 +437,7 @@ async def send_transaction(tx: TransactionSend, user_id: str = Depends(verify_to
                 "status": "broadcasted"
             }
         else:
-            usdt_contract = os.getenv("USDT_CONTRACT", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t")
+            usdt_contract = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"  # USDT-TRC20 mainnet contract
             contract = tron.get_contract(usdt_contract)
 
             txn = (
