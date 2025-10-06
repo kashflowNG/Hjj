@@ -17,99 +17,56 @@
             background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
             color: #FFFFFF;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 600px;
+        .app-container {
+            max-width: 480px;
             margin: 0 auto;
+            min-height: 100vh;
+            background: #0D0D0D;
+            position: relative;
         }
 
         .header {
+            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
+            padding: 20px;
             text-align: center;
-            padding: 40px 0;
+            box-shadow: 0 4px 12px rgba(255, 0, 19, 0.3);
         }
 
         .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .auth-screen {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100vh - 64px);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo h2 {
             font-size: 32px;
-            font-weight: bold;
             background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        .header p {
+        .auth-logo p {
             color: #B3B3B3;
             font-size: 14px;
         }
 
-        .auth-container {
-            margin-bottom: 30px;
-        }
-
-        .auth-status {
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .auth-status.logged-in {
-            background: linear-gradient(135deg, #00D66F 0%, #00A859 100%);
-        }
-
-        .auth-status.logged-out {
-            background: #2E2E2E;
-        }
-
-        .card {
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .card h2 {
-            font-size: 20px;
-            margin-bottom: 16px;
-            color: #FF0013;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: scale(0.98);
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .btn-secondary {
-            background: #2E2E2E;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
-        }
-
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
@@ -117,283 +74,421 @@
             margin-bottom: 8px;
             color: #B3B3B3;
             font-size: 14px;
+            font-weight: 500;
         }
 
-        .input-group input, .input-group select {
+        .input-group input {
             width: 100%;
-            padding: 12px 16px;
-            background: #0D0D0D;
+            padding: 16px;
+            background: #1A1A1A;
             border: 1px solid #333333;
-            border-radius: 8px;
+            border-radius: 12px;
             color: white;
             font-size: 16px;
         }
 
-        .input-group input:focus, .input-group select:focus {
+        .input-group input:focus {
             outline: none;
             border-color: #FF0013;
         }
 
-        .success {
-            background: #00D66F;
+        .btn {
+            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            text-align: center;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
         }
 
-        .error {
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #2E2E2E;
+            margin-top: 12px;
+        }
+
+        .wallet-home {
+            padding: 20px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #2E2E2E 0%, #1A1A1A 100%);
+            padding: 30px 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .balance-label {
+            color: #B3B3B3;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FF0013;
+            margin-bottom: 8px;
+        }
+
+        .balance-usd {
+            color: #B3B3B3;
+            font-size: 16px;
+        }
+
+        .wallet-address {
+            background: #1A1A1A;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 12px;
+            color: #B3B3B3;
+            word-break: break-all;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .action-btn {
+            background: #1A1A1A;
+            border: 1px solid #333333;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .action-btn-text {
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .wallets-section {
+            margin-top: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .add-wallet-btn {
             background: #FF0013;
             color: white;
-            padding: 12px;
+            border: none;
+            padding: 8px 16px;
             border-radius: 8px;
-            margin-bottom: 16px;
-            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .info {
-            background: #2E2E2E;
-            padding: 12px;
-            border-radius: 8px;
+        .wallet-item {
+            background: #1A1A1A;
+            padding: 16px;
+            border-radius: 12px;
             margin-bottom: 12px;
-            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wallet-item:active {
+            transform: scale(0.98);
+        }
+
+        .wallet-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .wallet-balance {
+            color: #B3B3B3;
             font-size: 14px;
         }
 
-        .info strong {
-            color: #FF0013;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1A1A1A;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #B3B3B3;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .qr-container img {
+            max-width: 250px;
+            border-radius: 12px;
+            margin: 20px 0;
         }
 
         .hidden {
             display: none;
         }
 
-        .wallet-item {
-            background: #2E2E2E;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-
-        .wallet-item h3 {
-            color: #FF0013;
-            margin-bottom: 8px;
-        }
-
-        .wallet-item p {
-            color: #B3B3B3;
-            font-size: 14px;
-            margin: 4px 0;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #2E2E2E 0%, #1A1A1A 100%);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .balance-amount {
-            font-size: 36px;
-            font-weight: bold;
-            color: #FF0013;
-            margin: 10px 0;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            flex: 1;
+        .message {
             padding: 12px;
-            background: #2E2E2E;
-            border: none;
             border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #00D66F;
+            color: white;
+        }
+
+        .message.error {
+            background: #FF0013;
+            color: white;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: #1A1A1A;
+            border-top: 1px solid #333333;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 12px 0;
+        }
+
+        .nav-item {
+            text-align: center;
             color: #B3B3B3;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 8px;
         }
 
-        .tab.active {
-            background: linear-gradient(135deg, #FF0013 0%, #E50914 100%);
-            color: white;
+        .nav-item.active {
+            color: #FF0013;
         }
 
-        #qrCode {
-            text-align: center;
-            margin: 20px 0;
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
         }
 
-        #qrCode img {
-            max-width: 300px;
-            border-radius: 12px;
-        }
-
-        .copy-btn {
-            background: #2E2E2E;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
+        .nav-label {
             font-size: 12px;
-            margin-left: 10px;
         }
 
-        .copy-btn:hover {
-            background: #3E3E3E;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
+        .logout-btn {
+            background: #2E2E2E;
+            color: #FF0013;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 12px;
+            cursor: pointer;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚀 TRON Wallet</h1>
-            <p>Secure TRX & USDT-TRC20 Wallet</p>
-        </div>
+    <div class="app-container">
+        <!-- Auth Screen -->
+        <div id="authScreen" class="auth-screen">
+            <div class="auth-logo">
+                <h2>🚀 TRON Wallet</h2>
+                <p>Your secure crypto wallet</p>
+            </div>
 
-        <div class="auth-status" id="authStatus">
-            <p id="authStatusText">Not logged in</p>
-            <button class="btn btn-danger" id="logoutBtn" onclick="logout()" style="display: none; margin-top: 10px;">Logout</button>
-        </div>
-
-        <!-- Auth Section -->
-        <div id="authSection" class="section active">
-            <div class="card">
-                <h2>🔐 Register</h2>
+            <div id="authForm">
                 <div class="input-group">
                     <label>PIN (4-6 digits)</label>
-                    <input type="password" id="registerPin" placeholder="1234" maxlength="6">
+                    <input type="password" id="authPin" placeholder="Enter PIN" maxlength="6">
                 </div>
                 <div class="input-group">
                     <label>Password (optional)</label>
-                    <input type="password" id="registerPassword" placeholder="Optional password">
+                    <input type="password" id="authPassword" placeholder="Optional password">
                 </div>
-                <button class="btn" onclick="register()">Register</button>
-                <div id="registerResult"></div>
-            </div>
-
-            <div class="card">
-                <h2>🔓 Login</h2>
-                <div class="input-group">
-                    <label>PIN</label>
-                    <input type="password" id="loginPin" placeholder="1234" maxlength="6">
-                </div>
-                <div class="input-group">
-                    <label>Password (if set)</label>
-                    <input type="password" id="loginPassword" placeholder="Password">
-                </div>
+                <div id="authMessage"></div>
                 <button class="btn" onclick="login()">Login</button>
-                <div id="loginResult"></div>
+                <button class="btn btn-secondary" onclick="register()">Create Account</button>
             </div>
         </div>
 
-        <!-- App Section (shown after login) -->
-        <div id="appSection" class="section">
-            <div class="tabs">
-                <button class="tab active" onclick="showAppTab('wallets')">Wallets</button>
-                <button class="tab" onclick="showAppTab('send')">Send</button>
-                <button class="tab" onclick="showAppTab('receive')">Receive</button>
+        <!-- Main App -->
+        <div id="mainApp" class="hidden">
+            <div class="header">
+                <h1>TRON Wallet</h1>
             </div>
 
-            <!-- Wallets Tab -->
-            <div id="walletsTab" class="app-tab-content">
-                <div class="card">
-                    <h2>💼 Create Wallet</h2>
-                    <div class="input-group">
-                        <label>Wallet Name</label>
-                        <input type="text" id="walletName" placeholder="My Main Wallet">
-                    </div>
-                    <button class="btn" onclick="createWallet()">Create New Wallet</button>
-                    <div id="createWalletResult"></div>
+            <div class="wallet-home">
+                <div class="balance-card">
+                    <div class="balance-label">Total Balance</div>
+                    <div class="balance-amount" id="totalBalance">0.00</div>
+                    <div class="balance-usd" id="totalBalanceUsd">$0.00 USD</div>
                 </div>
 
-                <div class="card">
-                    <h2>📥 Import Wallet</h2>
-                    <div class="input-group">
-                        <label>Wallet Name</label>
-                        <input type="text" id="importWalletName" placeholder="Imported Wallet">
-                    </div>
-                    <div class="input-group">
-                        <label>Private Key</label>
-                        <input type="password" id="importPrivateKey" placeholder="Your private key">
-                    </div>
-                    <button class="btn" onclick="importWallet()">Import Wallet</button>
-                    <div id="importWalletResult"></div>
+                <div class="wallet-address" id="currentAddress">
+                    Select a wallet
                 </div>
 
-                <div class="card">
-                    <h2>📋 My Wallets</h2>
-                    <button class="btn btn-secondary" onclick="listWallets()">Refresh Wallets</button>
+                <div class="action-buttons">
+                    <div class="action-btn" onclick="showSendModal()">
+                        <div class="action-btn-icon">↑</div>
+                        <div class="action-btn-text">Send</div>
+                    </div>
+                    <div class="action-btn" onclick="showReceiveModal()">
+                        <div class="action-btn-icon">↓</div>
+                        <div class="action-btn-text">Receive</div>
+                    </div>
+                </div>
+
+                <div class="wallets-section">
+                    <div class="section-header">
+                        <div class="section-title">My Wallets</div>
+                        <button class="add-wallet-btn" onclick="showCreateWalletModal()">+ Add</button>
+                    </div>
                     <div id="walletsList"></div>
                 </div>
+
+                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
+        </div>
 
-            <!-- Send Tab -->
-            <div id="sendTab" class="app-tab-content hidden">
-                <div class="card">
-                    <h2>💸 Send Transaction</h2>
-                    <div class="input-group">
-                        <label>From Wallet</label>
-                        <select id="sendFromWallet">
-                            <option value="">Select wallet</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>To Address</label>
-                        <input type="text" id="sendToAddress" placeholder="Recipient address">
-                    </div>
-                    <div class="input-group">
-                        <label>Amount</label>
-                        <input type="number" id="sendAmount" placeholder="0.00" step="0.01">
-                    </div>
-                    <div class="input-group">
-                        <label>Token Type</label>
-                        <select id="sendTokenType">
-                            <option value="TRX">TRX</option>
-                            <option value="USDT">USDT-TRC20</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="sendTransaction()">Send</button>
-                    <div id="sendResult"></div>
+        <!-- Send Modal -->
+        <div id="sendModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Send Crypto</div>
+                    <button class="close-btn" onclick="closeModal('sendModal')">&times;</button>
                 </div>
+                <div class="input-group">
+                    <label>From Wallet</label>
+                    <select id="sendFromWallet" class="input-group input" style="padding: 16px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; color: white;">
+                        <option value="">Select wallet</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>To Address</label>
+                    <input type="text" id="sendToAddress" placeholder="Recipient address">
+                </div>
+                <div class="input-group">
+                    <label>Amount</label>
+                    <input type="number" id="sendAmount" placeholder="0.00" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Token</label>
+                    <select id="sendToken" class="input-group input" style="padding: 16px; background: #1A1A1A; border: 1px solid #333; border-radius: 12px; color: white;">
+                        <option value="TRX">TRX</option>
+                        <option value="USDT">USDT</option>
+                    </select>
+                </div>
+                <div id="sendMessage"></div>
+                <button class="btn" onclick="sendTransaction()">Send</button>
             </div>
+        </div>
 
-            <!-- Receive Tab -->
-            <div id="receiveTab" class="app-tab-content hidden">
-                <div class="card">
-                    <h2>💰 Check Balance</h2>
-                    <div class="input-group">
-                        <label>Wallet Address</label>
-                        <input type="text" id="balanceAddress" placeholder="Wallet address">
-                    </div>
-                    <button class="btn" onclick="checkBalance()">Check Balance</button>
-                    <div id="balanceResult"></div>
+        <!-- Receive Modal -->
+        <div id="receiveModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Receive Crypto</div>
+                    <button class="close-btn" onclick="closeModal('receiveModal')">&times;</button>
                 </div>
-
-                <div class="card">
-                    <h2>📱 Generate QR Code</h2>
-                    <div class="input-group">
-                        <label>Wallet Address</label>
-                        <input type="text" id="qrAddress" placeholder="Wallet address">
-                    </div>
-                    <button class="btn" onclick="generateQR()">Generate QR Code</button>
+                <div class="qr-container">
                     <div id="qrCode"></div>
+                    <div id="receiveAddress" style="color: #B3B3B3; font-size: 12px; word-break: break-all; margin-top: 12px;"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Create Wallet Modal -->
+        <div id="createWalletModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Create Wallet</div>
+                    <button class="close-btn" onclick="closeModal('createWalletModal')">&times;</button>
+                </div>
+                <div class="input-group">
+                    <label>Wallet Name</label>
+                    <input type="text" id="newWalletName" placeholder="My Wallet">
+                </div>
+                <div id="createMessage"></div>
+                <button class="btn" onclick="createWallet()">Create Wallet</button>
             </div>
         </div>
     </div>
@@ -401,59 +496,28 @@
     <script>
         let authToken = localStorage.getItem('authToken');
         let wallets = [];
+        let selectedWallet = null;
 
-        // Check auth status on load
         window.onload = function() {
             if (authToken) {
-                updateAuthStatus(true);
+                showMainApp();
                 loadWallets();
             }
         };
 
-        function updateAuthStatus(loggedIn) {
-            const authStatus = document.getElementById('authStatus');
-            const authStatusText = document.getElementById('authStatusText');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const authSection = document.getElementById('authSection');
-            const appSection = document.getElementById('appSection');
-
-            if (loggedIn) {
-                authStatus.className = 'auth-status logged-in';
-                authStatusText.textContent = '✓ Logged In';
-                logoutBtn.style.display = 'block';
-                authSection.classList.remove('active');
-                appSection.classList.add('active');
-            } else {
-                authStatus.className = 'auth-status logged-out';
-                authStatusText.textContent = 'Not logged in';
-                logoutBtn.style.display = 'none';
-                authSection.classList.add('active');
-                appSection.classList.remove('active');
-            }
+        function showMainApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
         }
 
-        function logout() {
-            authToken = null;
-            localStorage.removeItem('authToken');
-            updateAuthStatus(false);
-            wallets = [];
-        }
-
-        function showAppTab(tabName) {
-            document.querySelectorAll('.app-tab-content').forEach(tab => tab.classList.add('hidden'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            event.target.classList.add('active');
-
-            if (tabName === 'wallets') {
-                listWallets();
-            }
+        function showAuthScreen() {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
         }
 
         async function register() {
-            const pin = document.getElementById('registerPin').value;
-            const password = document.getElementById('registerPassword').value;
+            const pin = document.getElementById('authPin').value;
+            const password = document.getElementById('authPassword').value;
             
             try {
                 const response = await fetch('/auth/register', {
@@ -467,22 +531,22 @@
                 if (response.ok) {
                     authToken = data.access_token;
                     localStorage.setItem('authToken', authToken);
-                    document.getElementById('registerResult').innerHTML = `<div class="success">Registration successful!</div>`;
+                    showMessage('authMessage', 'Account created successfully!', 'success');
                     setTimeout(() => {
-                        updateAuthStatus(true);
+                        showMainApp();
                         loadWallets();
                     }, 1000);
                 } else {
-                    document.getElementById('registerResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                    showMessage('authMessage', data.detail, 'error');
                 }
             } catch (error) {
-                document.getElementById('registerResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                showMessage('authMessage', 'Error: ' + error.message, 'error');
             }
         }
 
         async function login() {
-            const pin = document.getElementById('loginPin').value;
-            const password = document.getElementById('loginPassword').value;
+            const pin = document.getElementById('authPin').value;
+            const password = document.getElementById('authPassword').value;
             
             try {
                 const response = await fetch('/auth/login', {
@@ -496,99 +560,28 @@
                 if (response.ok) {
                     authToken = data.access_token;
                     localStorage.setItem('authToken', authToken);
-                    document.getElementById('loginResult').innerHTML = `<div class="success">Login successful!</div>`;
+                    showMessage('authMessage', 'Login successful!', 'success');
                     setTimeout(() => {
-                        updateAuthStatus(true);
+                        showMainApp();
                         loadWallets();
                     }, 1000);
                 } else {
-                    document.getElementById('loginResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                    showMessage('authMessage', data.detail, 'error');
                 }
             } catch (error) {
-                document.getElementById('loginResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                showMessage('authMessage', 'Error: ' + error.message, 'error');
             }
         }
 
-        async function createWallet() {
-            if (!authToken) {
-                alert('Please login first!');
-                return;
-            }
-            
-            const name = document.getElementById('walletName').value || 'My Wallet';
-            
-            try {
-                const response = await fetch('/wallets/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ name })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('createWalletResult').innerHTML = `
-                        <div class="success">Wallet created successfully!</div>
-                        <div class="info"><strong>Name:</strong> ${data.name}</div>
-                        <div class="info"><strong>Address:</strong> ${data.address} <button class="copy-btn" onclick="copyText('${data.address}')">Copy</button></div>
-                    `;
-                    listWallets();
-                } else {
-                    document.getElementById('createWalletResult').innerHTML = `<div class="error">${data.detail}</div>`;
-                }
-            } catch (error) {
-                document.getElementById('createWalletResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
-            }
-        }
-
-        async function importWallet() {
-            if (!authToken) {
-                alert('Please login first!');
-                return;
-            }
-            
-            const name = document.getElementById('importWalletName').value;
-            const privateKey = document.getElementById('importPrivateKey').value;
-            
-            if (!name || !privateKey) {
-                document.getElementById('importWalletResult').innerHTML = `<div class="error">Please fill all fields</div>`;
-                return;
-            }
-            
-            try {
-                const response = await fetch('/wallets/import', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ name, private_key: privateKey })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('importWalletResult').innerHTML = `
-                        <div class="success">Wallet imported successfully!</div>
-                        <div class="info"><strong>Name:</strong> ${data.name}</div>
-                        <div class="info"><strong>Address:</strong> ${data.address}</div>
-                    `;
-                    document.getElementById('importPrivateKey').value = '';
-                    listWallets();
-                } else {
-                    document.getElementById('importWalletResult').innerHTML = `<div class="error">${data.detail}</div>`;
-                }
-            } catch (error) {
-                document.getElementById('importWalletResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
-            }
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            wallets = [];
+            selectedWallet = null;
+            showAuthScreen();
         }
 
         async function loadWallets() {
-            if (!authToken) return;
-            
             try {
                 const response = await fetch('/wallets', {
                     headers: { 'Authorization': `Bearer ${authToken}` }
@@ -598,10 +591,28 @@
                 
                 if (response.ok) {
                     wallets = data.wallets;
+                    displayWallets();
                     updateSendWalletDropdown();
+                    if (wallets.length > 0 && !selectedWallet) {
+                        selectWallet(wallets[0]);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading wallets:', error);
+            }
+        }
+
+        function displayWallets() {
+            const container = document.getElementById('walletsList');
+            if (wallets.length === 0) {
+                container.innerHTML = '<p style="color: #B3B3B3; text-align: center; padding: 20px;">No wallets yet. Create one to get started!</p>';
+            } else {
+                container.innerHTML = wallets.map(wallet => `
+                    <div class="wallet-item" onclick='selectWallet(${JSON.stringify(wallet)})'>
+                        <div class="wallet-name">💼 ${wallet.name}</div>
+                        <div class="wallet-balance">${wallet.address.substring(0, 12)}...${wallet.address.slice(-6)}</div>
+                    </div>
+                `).join('');
             }
         }
 
@@ -616,56 +627,62 @@
             });
         }
 
-        async function listWallets() {
-            if (!authToken) {
-                alert('Please login first!');
-                return;
-            }
+        async function selectWallet(wallet) {
+            selectedWallet = wallet;
+            document.getElementById('currentAddress').textContent = wallet.address;
             
             try {
-                const response = await fetch('/wallets', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const response = await fetch(`/balance/${wallet.address}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const trxBalance = data.balances.TRX || 0;
+                    document.getElementById('totalBalance').textContent = trxBalance.toFixed(2) + ' TRX';
+                    document.getElementById('totalBalanceUsd').textContent = (data.balances.USDT || 0).toFixed(2) + ' USDT';
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+            }
+        }
+
+        async function createWallet() {
+            const name = document.getElementById('newWalletName').value || 'My Wallet';
+            
+            try {
+                const response = await fetch('/wallets/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ name })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    wallets = data.wallets;
-                    updateSendWalletDropdown();
-                    
-                    const walletsDiv = document.getElementById('walletsList');
-                    if (data.wallets.length === 0) {
-                        walletsDiv.innerHTML = '<p style="color: #B3B3B3; margin-top: 16px;">No wallets found. Create one!</p>';
-                    } else {
-                        walletsDiv.innerHTML = data.wallets.map(wallet => `
-                            <div class="wallet-item">
-                                <h3>${wallet.name}</h3>
-                                <p><strong>Address:</strong> ${wallet.address} <button class="copy-btn" onclick="copyText('${wallet.address}')">Copy</button></p>
-                                <p><strong>Created:</strong> ${new Date(wallet.created_at).toLocaleString()}</p>
-                            </div>
-                        `).join('');
-                    }
+                    showMessage('createMessage', 'Wallet created successfully!', 'success');
+                    document.getElementById('newWalletName').value = '';
+                    setTimeout(() => {
+                        closeModal('createWalletModal');
+                        loadWallets();
+                    }, 1000);
                 } else {
-                    alert('Error: ' + data.detail);
+                    showMessage('createMessage', data.detail, 'error');
                 }
             } catch (error) {
-                alert('Error: ' + error.message);
+                showMessage('createMessage', 'Error: ' + error.message, 'error');
             }
         }
 
         async function sendTransaction() {
-            if (!authToken) {
-                alert('Please login first!');
-                return;
-            }
-            
             const fromAddress = document.getElementById('sendFromWallet').value;
             const toAddress = document.getElementById('sendToAddress').value;
             const amount = parseFloat(document.getElementById('sendAmount').value);
-            const tokenType = document.getElementById('sendTokenType').value;
+            const token = document.getElementById('sendToken').value;
             
             if (!fromAddress || !toAddress || !amount) {
-                document.getElementById('sendResult').innerHTML = `<div class="error">Please fill all fields</div>`;
+                showMessage('sendMessage', 'Please fill all fields', 'error');
                 return;
             }
             
@@ -680,86 +697,67 @@
                         from_address: fromAddress,
                         to_address: toAddress,
                         amount: amount,
-                        token_type: tokenType
+                        token_type: token
                     })
                 });
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('sendResult').innerHTML = `
-                        <div class="success">Transaction sent successfully!</div>
-                        <div class="info"><strong>TX ID:</strong> ${data.transaction_id}</div>
-                        <div class="info"><strong>Amount:</strong> ${data.amount} ${data.token}</div>
-                    `;
+                    showMessage('sendMessage', 'Transaction sent successfully!', 'success');
+                    setTimeout(() => {
+                        closeModal('sendModal');
+                        if (selectedWallet) selectWallet(selectedWallet);
+                    }, 2000);
                 } else {
-                    document.getElementById('sendResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                    showMessage('sendMessage', data.detail, 'error');
                 }
             } catch (error) {
-                document.getElementById('sendResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                showMessage('sendMessage', 'Error: ' + error.message, 'error');
             }
         }
 
-        async function checkBalance() {
-            const address = document.getElementById('balanceAddress').value;
-            
-            if (!address) {
-                document.getElementById('balanceResult').innerHTML = `<div class="error">Please enter an address</div>`;
+        async function showReceiveModal() {
+            if (!selectedWallet) {
+                alert('Please select a wallet first');
                 return;
             }
             
+            document.getElementById('receiveModal').classList.add('active');
+            document.getElementById('receiveAddress').textContent = selectedWallet.address;
+            
             try {
-                const response = await fetch(`/balance/${address}`);
+                const response = await fetch(`/qr/${selectedWallet.address}`);
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('balanceResult').innerHTML = `
-                        <div class="balance-card">
-                            <h3>Balance</h3>
-                            <div class="balance-amount">${data.balances.TRX} TRX</div>
-                            <div style="color: #B3B3B3;">${data.balances.USDT} USDT</div>
-                            <p style="color: #666; font-size: 12px; margin-top: 10px;">Updated: ${new Date(data.updated_at).toLocaleString()}</p>
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('balanceResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                    document.getElementById('qrCode').innerHTML = `<img src="${data.qr_code}" alt="QR Code">`;
                 }
             } catch (error) {
-                document.getElementById('balanceResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                console.error('Error generating QR:', error);
             }
         }
 
-        async function generateQR() {
-            const address = document.getElementById('qrAddress').value;
-            
-            if (!address) {
-                document.getElementById('qrCode').innerHTML = `<div class="error">Please enter an address</div>`;
+        function showSendModal() {
+            if (!selectedWallet) {
+                alert('Please select a wallet first');
                 return;
             }
-            
-            try {
-                const response = await fetch(`/qr/${address}`);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('qrCode').innerHTML = `
-                        <div style="margin-top: 20px;">
-                            <img src="${data.qr_code}" alt="QR Code">
-                            <p style="color: #B3B3B3; margin-top: 10px; word-break: break-all;">${data.address}</p>
-                        </div>
-                    `;
-                } else {
-                    alert('Error: ' + data.detail);
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            document.getElementById('sendModal').classList.add('active');
         }
 
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Copied to clipboard!');
-            });
+        function showCreateWalletModal() {
+            document.getElementById('createWalletModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => element.innerHTML = '', 5000);
         }
     </script>
 </body>
