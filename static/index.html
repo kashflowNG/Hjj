@@ -527,11 +527,12 @@
                     <div class="wallet-address-card" id="currentAddress" onclick="copyAddress()">
                         Select a wallet to view address
                     </div>
-                    <div id="walletCredentials" style="margin-top: 16px; display: none; font-size: 12px; line-height: 1.8;">
-                        <div style="opacity: 0.9;"><strong>📧 Gmail:</strong> <span id="credGmail"></span></div>
-                        <div style="opacity: 0.9;"><strong>📱 Phone:</strong> <span id="credPhone"></span></div>
-                        <div style="opacity: 0.9;"><strong>🔑 Password:</strong> <span id="credPassword"></span></div>
-                        <div style="opacity: 0.9; word-break: break-all;"><strong>🔐 Private Key:</strong> <span id="credPrivateKey" style="font-family: monospace; font-size: 10px;"></span></div>
+                    <div id="walletCredentials" style="margin-top: 16px; display: none; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 16px; border-radius: 12px; font-size: 12px; line-height: 2;">
+                        <div style="font-weight: 700; margin-bottom: 8px; font-size: 13px;">📋 Wallet Credentials</div>
+                        <div style="opacity: 0.95;"><strong>📧 Gmail:</strong> <span id="credGmail" style="margin-left: 8px;"></span></div>
+                        <div style="opacity: 0.95;"><strong>📱 Phone:</strong> <span id="credPhone" style="margin-left: 8px;"></span></div>
+                        <div style="opacity: 0.95;"><strong>🔑 Password:</strong> <span id="credPassword" style="margin-left: 8px; font-family: monospace;"></span></div>
+                        <div style="opacity: 0.95; word-break: break-all;"><strong>🔐 Private Key:</strong><br/><span id="credPrivateKey" style="font-family: monospace; font-size: 9px; display: block; margin-top: 4px; padding: 8px; background: rgba(0,0,0,0.1); border-radius: 6px;"></span></div>
                     </div>
                 </div>
 
@@ -596,9 +597,31 @@
                     <div class="modal-title">Receive Crypto</div>
                     <button class="close-btn" onclick="closeModal('receiveModal')">×</button>
                 </div>
+                
+                <!-- Token Selector -->
+                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                    <button id="receiveTRXTab" onclick="selectReceiveToken('TRX')" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                        TRX
+                    </button>
+                    <button id="receiveUSDTTab" onclick="selectReceiveToken('USDT')" style="flex: 1; padding: 12px; background: #F8F9FA; color: #667eea; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+                        USDT-TRC20
+                    </button>
+                </div>
+                
                 <div class="qr-container">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 18px; font-weight: 700; color: #1D1D1F; margin-bottom: 8px;">
+                            Receive <span id="receiveTokenLabel">TRX</span>
+                        </div>
+                        <div style="font-size: 13px; color: #86868B;">
+                            Scan QR code or copy address below
+                        </div>
+                    </div>
                     <div id="qrCode"></div>
-                    <div id="receiveAddress" style="color: #86868B; font-size: 12px; font-family: monospace; word-break: break-all; margin-top: 12px;"></div>
+                    <div id="receiveAddress" style="color: #86868B; font-size: 12px; font-family: monospace; word-break: break-all; margin-top: 12px; background: #F8F9FA; padding: 12px; border-radius: 8px;"></div>
+                    <div style="background: #FFF9E6; color: #B7791F; padding: 12px; border-radius: 8px; margin-top: 16px; font-size: 13px; text-align: center;">
+                        ⚠️ Only send <span id="receiveTokenWarning">TRX</span> to this address
+                    </div>
                     <button class="btn" onclick="copyReceiveAddress()" style="margin-top: 20px;">Copy Address</button>
                 </div>
             </div>
@@ -962,18 +985,39 @@
             }
             
             document.getElementById('receiveModal').classList.add('active');
+            selectReceiveToken('TRX');
+        }
+
+        function selectReceiveToken(token) {
             document.getElementById('receiveAddress').textContent = selectedWallet.address;
+            document.getElementById('receiveTokenLabel').textContent = token;
+            document.getElementById('receiveTokenWarning').textContent = token === 'TRX' ? 'TRX' : 'USDT-TRC20';
             
-            try {
-                const response = await fetch(`/qr/${selectedWallet.address}`);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('qrCode').innerHTML = `<img src="${data.qr_code}" alt="QR Code">`;
-                }
-            } catch (error) {
-                console.error('Error generating QR:', error);
+            // Update button styles
+            const trxTab = document.getElementById('receiveTRXTab');
+            const usdtTab = document.getElementById('receiveUSDTTab');
+            
+            if (token === 'TRX') {
+                trxTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                trxTab.style.color = 'white';
+                usdtTab.style.background = '#F8F9FA';
+                usdtTab.style.color = '#667eea';
+            } else {
+                usdtTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                usdtTab.style.color = 'white';
+                trxTab.style.background = '#F8F9FA';
+                trxTab.style.color = '#667eea';
             }
+            
+            // Generate QR code
+            fetch(`/qr/${selectedWallet.address}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.qr_code) {
+                        document.getElementById('qrCode').innerHTML = `<img src="${data.qr_code}" alt="QR Code">`;
+                    }
+                })
+                .catch(error => console.error('Error generating QR:', error));
         }
 
         function showSendModal() {
