@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRON Wallet - Demo</title>
+    <title>TRON Wallet</title>
     <style>
         * {
             margin: 0;
@@ -42,6 +42,26 @@
         .header p {
             color: #B3B3B3;
             font-size: 14px;
+        }
+
+        .auth-container {
+            margin-bottom: 30px;
+        }
+
+        .auth-status {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-status.logged-in {
+            background: linear-gradient(135deg, #00D66F 0%, #00A859 100%);
+        }
+
+        .auth-status.logged-out {
+            background: #2E2E2E;
         }
 
         .card {
@@ -84,6 +104,10 @@
             background: #2E2E2E;
         }
 
+        .btn-danger {
+            background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+        }
+
         .input-group {
             margin-bottom: 16px;
         }
@@ -95,7 +119,7 @@
             font-size: 14px;
         }
 
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px 16px;
             background: #0D0D0D;
@@ -105,22 +129,9 @@
             font-size: 16px;
         }
 
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #FF0013;
-        }
-
-        .demo-data {
-            background: #2E2E2E;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-        }
-
-        .demo-data strong {
-            color: #FF0013;
         }
 
         .success {
@@ -139,6 +150,19 @@
             border-radius: 8px;
             margin-bottom: 16px;
             text-align: center;
+        }
+
+        .info {
+            background: #2E2E2E;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .info strong {
+            color: #FF0013;
         }
 
         .hidden {
@@ -225,51 +249,35 @@
         .copy-btn:hover {
             background: #3E3E3E;
         }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🚀 TRON Wallet</h1>
-            <p>Full-Stack Demo - API Ready for Mobile Integration</p>
+            <p>Secure TRX & USDT-TRC20 Wallet</p>
         </div>
 
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('demo')">Demo Mode</button>
-            <button class="tab" onclick="showTab('auth')">Auth</button>
-            <button class="tab" onclick="showTab('wallets')">Wallets</button>
-            <button class="tab" onclick="showTab('transactions')">Transactions</button>
+        <div class="auth-status" id="authStatus">
+            <p id="authStatusText">Not logged in</p>
+            <button class="btn btn-danger" id="logoutBtn" onclick="logout()" style="display: none; margin-top: 10px;">Logout</button>
         </div>
 
-        <!-- Demo Tab -->
-        <div id="demoTab" class="tab-content">
-            <div class="card">
-                <h2>🎭 Demo Profile Generator</h2>
-                <p style="color: #B3B3B3; margin-bottom: 20px;">
-                    Generate realistic fake profiles with USA/UK/Australia phone numbers, Gmail-style emails, and demo wallet balances.
-                </p>
-                <button class="btn" onclick="generateDemo()">Generate Demo Profile</button>
-                <div id="demoResult" class="hidden"></div>
-            </div>
-
-            <div class="card">
-                <h2>📚 API Documentation</h2>
-                <p style="color: #B3B3B3; margin-bottom: 10px;">
-                    Complete REST API documentation available at:
-                </p>
-                <a href="/docs" target="_blank" style="color: #FF0013; text-decoration: none;">
-                    <button class="btn btn-secondary">Open API Docs (Swagger)</button>
-                </a>
-            </div>
-        </div>
-
-        <!-- Auth Tab -->
-        <div id="authTab" class="tab-content hidden">
+        <!-- Auth Section -->
+        <div id="authSection" class="section active">
             <div class="card">
                 <h2>🔐 Register</h2>
                 <div class="input-group">
                     <label>PIN (4-6 digits)</label>
-                    <input type="password" id="registerPin" placeholder="1234">
+                    <input type="password" id="registerPin" placeholder="1234" maxlength="6">
                 </div>
                 <div class="input-group">
                     <label>Password (optional)</label>
@@ -283,7 +291,7 @@
                 <h2>🔓 Login</h2>
                 <div class="input-group">
                     <label>PIN</label>
-                    <input type="password" id="loginPin" placeholder="1234">
+                    <input type="password" id="loginPin" placeholder="1234" maxlength="6">
                 </div>
                 <div class="input-group">
                     <label>Password (if set)</label>
@@ -294,78 +302,152 @@
             </div>
         </div>
 
-        <!-- Wallets Tab -->
-        <div id="walletsTab" class="tab-content hidden">
-            <div class="card">
-                <h2>💼 Create Wallet</h2>
-                <div class="input-group">
-                    <label>Wallet Name</label>
-                    <input type="text" id="walletName" placeholder="My Main Wallet">
-                </div>
-                <button class="btn" onclick="createWallet()">Create New Wallet</button>
-                <div id="createWalletResult"></div>
+        <!-- App Section (shown after login) -->
+        <div id="appSection" class="section">
+            <div class="tabs">
+                <button class="tab active" onclick="showAppTab('wallets')">Wallets</button>
+                <button class="tab" onclick="showAppTab('send')">Send</button>
+                <button class="tab" onclick="showAppTab('receive')">Receive</button>
             </div>
 
-            <div class="card">
-                <h2>📋 My Wallets</h2>
-                <button class="btn btn-secondary" onclick="listWallets()">Refresh Wallets</button>
-                <div id="walletsList"></div>
-            </div>
-        </div>
-
-        <!-- Transactions Tab -->
-        <div id="transactionsTab" class="tab-content hidden">
-            <div class="card">
-                <h2>💰 Check Balance</h2>
-                <div class="input-group">
-                    <label>Wallet Address</label>
-                    <input type="text" id="balanceAddress" placeholder="TJRabPrwbZy45sbavfcjinPJC18kjpRTv8">
+            <!-- Wallets Tab -->
+            <div id="walletsTab" class="app-tab-content">
+                <div class="card">
+                    <h2>💼 Create Wallet</h2>
+                    <div class="input-group">
+                        <label>Wallet Name</label>
+                        <input type="text" id="walletName" placeholder="My Main Wallet">
+                    </div>
+                    <button class="btn" onclick="createWallet()">Create New Wallet</button>
+                    <div id="createWalletResult"></div>
                 </div>
-                <button class="btn" onclick="checkBalance()">Check Balance</button>
-                <div id="balanceResult"></div>
+
+                <div class="card">
+                    <h2>📥 Import Wallet</h2>
+                    <div class="input-group">
+                        <label>Wallet Name</label>
+                        <input type="text" id="importWalletName" placeholder="Imported Wallet">
+                    </div>
+                    <div class="input-group">
+                        <label>Private Key</label>
+                        <input type="password" id="importPrivateKey" placeholder="Your private key">
+                    </div>
+                    <button class="btn" onclick="importWallet()">Import Wallet</button>
+                    <div id="importWalletResult"></div>
+                </div>
+
+                <div class="card">
+                    <h2>📋 My Wallets</h2>
+                    <button class="btn btn-secondary" onclick="listWallets()">Refresh Wallets</button>
+                    <div id="walletsList"></div>
+                </div>
             </div>
 
-            <div class="card">
-                <h2>📱 Generate QR Code</h2>
-                <div class="input-group">
-                    <label>Wallet Address</label>
-                    <input type="text" id="qrAddress" placeholder="TJRabPrwbZy45sbavfcjinPJC18kjpRTv8">
+            <!-- Send Tab -->
+            <div id="sendTab" class="app-tab-content hidden">
+                <div class="card">
+                    <h2>💸 Send Transaction</h2>
+                    <div class="input-group">
+                        <label>From Wallet</label>
+                        <select id="sendFromWallet">
+                            <option value="">Select wallet</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>To Address</label>
+                        <input type="text" id="sendToAddress" placeholder="Recipient address">
+                    </div>
+                    <div class="input-group">
+                        <label>Amount</label>
+                        <input type="number" id="sendAmount" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Token Type</label>
+                        <select id="sendTokenType">
+                            <option value="TRX">TRX</option>
+                            <option value="USDT">USDT-TRC20</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="sendTransaction()">Send</button>
+                    <div id="sendResult"></div>
                 </div>
-                <button class="btn" onclick="generateQR()">Generate QR Code</button>
-                <div id="qrCode"></div>
+            </div>
+
+            <!-- Receive Tab -->
+            <div id="receiveTab" class="app-tab-content hidden">
+                <div class="card">
+                    <h2>💰 Check Balance</h2>
+                    <div class="input-group">
+                        <label>Wallet Address</label>
+                        <input type="text" id="balanceAddress" placeholder="Wallet address">
+                    </div>
+                    <button class="btn" onclick="checkBalance()">Check Balance</button>
+                    <div id="balanceResult"></div>
+                </div>
+
+                <div class="card">
+                    <h2>📱 Generate QR Code</h2>
+                    <div class="input-group">
+                        <label>Wallet Address</label>
+                        <input type="text" id="qrAddress" placeholder="Wallet address">
+                    </div>
+                    <button class="btn" onclick="generateQR()">Generate QR Code</button>
+                    <div id="qrCode"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let authToken = localStorage.getItem('authToken');
+        let wallets = [];
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+        // Check auth status on load
+        window.onload = function() {
+            if (authToken) {
+                updateAuthStatus(true);
+                loadWallets();
+            }
+        };
+
+        function updateAuthStatus(loggedIn) {
+            const authStatus = document.getElementById('authStatus');
+            const authStatusText = document.getElementById('authStatusText');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const authSection = document.getElementById('authSection');
+            const appSection = document.getElementById('appSection');
+
+            if (loggedIn) {
+                authStatus.className = 'auth-status logged-in';
+                authStatusText.textContent = '✓ Logged In';
+                logoutBtn.style.display = 'block';
+                authSection.classList.remove('active');
+                appSection.classList.add('active');
+            } else {
+                authStatus.className = 'auth-status logged-out';
+                authStatusText.textContent = 'Not logged in';
+                logoutBtn.style.display = 'none';
+                authSection.classList.add('active');
+                appSection.classList.remove('active');
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            updateAuthStatus(false);
+            wallets = [];
+        }
+
+        function showAppTab(tabName) {
+            document.querySelectorAll('.app-tab-content').forEach(tab => tab.classList.add('hidden'));
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             
             document.getElementById(tabName + 'Tab').classList.remove('hidden');
             event.target.classList.add('active');
-        }
 
-        async function generateDemo() {
-            try {
-                const response = await fetch('/demo/generate');
-                const data = await response.json();
-                
-                const resultDiv = document.getElementById('demoResult');
-                resultDiv.innerHTML = `
-                    <div class="success" style="margin-top: 20px;">Demo Profile Generated!</div>
-                    <div class="demo-data"><strong>📧 Email:</strong> ${data.email} <button class="copy-btn" onclick="copyText('${data.email}')">Copy</button></div>
-                    <div class="demo-data"><strong>📱 Phone:</strong> ${data.phone} <button class="copy-btn" onclick="copyText('${data.phone}')">Copy</button></div>
-                    <div class="demo-data"><strong>🔑 Password:</strong> ${data.password} <button class="copy-btn" onclick="copyText('${data.password}')">Copy</button></div>
-                    <div class="demo-data"><strong>💼 Wallet:</strong> ${data.wallet_address} <button class="copy-btn" onclick="copyText('${data.wallet_address}')">Copy</button></div>
-                    <div class="demo-data"><strong>💰 TRX:</strong> ${data.balance_trx}</div>
-                    <div class="demo-data"><strong>💵 USDT:</strong> ${data.balance_usdt}</div>
-                `;
-                resultDiv.classList.remove('hidden');
-            } catch (error) {
-                alert('Error: ' + error.message);
+            if (tabName === 'wallets') {
+                listWallets();
             }
         }
 
@@ -385,10 +467,11 @@
                 if (response.ok) {
                     authToken = data.access_token;
                     localStorage.setItem('authToken', authToken);
-                    document.getElementById('registerResult').innerHTML = `
-                        <div class="success">Registration successful! Token saved.</div>
-                        <div class="demo-data"><strong>User ID:</strong> ${data.user_id}</div>
-                    `;
+                    document.getElementById('registerResult').innerHTML = `<div class="success">Registration successful!</div>`;
+                    setTimeout(() => {
+                        updateAuthStatus(true);
+                        loadWallets();
+                    }, 1000);
                 } else {
                     document.getElementById('registerResult').innerHTML = `<div class="error">${data.detail}</div>`;
                 }
@@ -413,10 +496,11 @@
                 if (response.ok) {
                     authToken = data.access_token;
                     localStorage.setItem('authToken', authToken);
-                    document.getElementById('loginResult').innerHTML = `
-                        <div class="success">Login successful! Token saved.</div>
-                        <div class="demo-data"><strong>User ID:</strong> ${data.user_id}</div>
-                    `;
+                    document.getElementById('loginResult').innerHTML = `<div class="success">Login successful!</div>`;
+                    setTimeout(() => {
+                        updateAuthStatus(true);
+                        loadWallets();
+                    }, 1000);
                 } else {
                     document.getElementById('loginResult').innerHTML = `<div class="error">${data.detail}</div>`;
                 }
@@ -431,7 +515,7 @@
                 return;
             }
             
-            const name = document.getElementById('walletName').value;
+            const name = document.getElementById('walletName').value || 'My Wallet';
             
             try {
                 const response = await fetch('/wallets/create', {
@@ -448,16 +532,88 @@
                 if (response.ok) {
                     document.getElementById('createWalletResult').innerHTML = `
                         <div class="success">Wallet created successfully!</div>
-                        <div class="demo-data"><strong>Name:</strong> ${data.name}</div>
-                        <div class="demo-data"><strong>Address:</strong> ${data.address} <button class="copy-btn" onclick="copyText('${data.address}')">Copy</button></div>
-                        <div class="demo-data"><strong>ID:</strong> ${data.wallet_id}</div>
+                        <div class="info"><strong>Name:</strong> ${data.name}</div>
+                        <div class="info"><strong>Address:</strong> ${data.address} <button class="copy-btn" onclick="copyText('${data.address}')">Copy</button></div>
                     `;
+                    listWallets();
                 } else {
                     document.getElementById('createWalletResult').innerHTML = `<div class="error">${data.detail}</div>`;
                 }
             } catch (error) {
                 document.getElementById('createWalletResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
             }
+        }
+
+        async function importWallet() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            const name = document.getElementById('importWalletName').value;
+            const privateKey = document.getElementById('importPrivateKey').value;
+            
+            if (!name || !privateKey) {
+                document.getElementById('importWalletResult').innerHTML = `<div class="error">Please fill all fields</div>`;
+                return;
+            }
+            
+            try {
+                const response = await fetch('/wallets/import', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ name, private_key: privateKey })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('importWalletResult').innerHTML = `
+                        <div class="success">Wallet imported successfully!</div>
+                        <div class="info"><strong>Name:</strong> ${data.name}</div>
+                        <div class="info"><strong>Address:</strong> ${data.address}</div>
+                    `;
+                    document.getElementById('importPrivateKey').value = '';
+                    listWallets();
+                } else {
+                    document.getElementById('importWalletResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('importWalletResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function loadWallets() {
+            if (!authToken) return;
+            
+            try {
+                const response = await fetch('/wallets', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    wallets = data.wallets;
+                    updateSendWalletDropdown();
+                }
+            } catch (error) {
+                console.error('Error loading wallets:', error);
+            }
+        }
+
+        function updateSendWalletDropdown() {
+            const select = document.getElementById('sendFromWallet');
+            select.innerHTML = '<option value="">Select wallet</option>';
+            wallets.forEach(wallet => {
+                const option = document.createElement('option');
+                option.value = wallet.address;
+                option.textContent = `${wallet.name} (${wallet.address.substring(0, 8)}...)`;
+                select.appendChild(option);
+            });
         }
 
         async function listWallets() {
@@ -474,6 +630,9 @@
                 const data = await response.json();
                 
                 if (response.ok) {
+                    wallets = data.wallets;
+                    updateSendWalletDropdown();
+                    
                     const walletsDiv = document.getElementById('walletsList');
                     if (data.wallets.length === 0) {
                         walletsDiv.innerHTML = '<p style="color: #B3B3B3; margin-top: 16px;">No wallets found. Create one!</p>';
@@ -494,8 +653,60 @@
             }
         }
 
+        async function sendTransaction() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            const fromAddress = document.getElementById('sendFromWallet').value;
+            const toAddress = document.getElementById('sendToAddress').value;
+            const amount = parseFloat(document.getElementById('sendAmount').value);
+            const tokenType = document.getElementById('sendTokenType').value;
+            
+            if (!fromAddress || !toAddress || !amount) {
+                document.getElementById('sendResult').innerHTML = `<div class="error">Please fill all fields</div>`;
+                return;
+            }
+            
+            try {
+                const response = await fetch('/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        from_address: fromAddress,
+                        to_address: toAddress,
+                        amount: amount,
+                        token_type: tokenType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('sendResult').innerHTML = `
+                        <div class="success">Transaction sent successfully!</div>
+                        <div class="info"><strong>TX ID:</strong> ${data.transaction_id}</div>
+                        <div class="info"><strong>Amount:</strong> ${data.amount} ${data.token}</div>
+                    `;
+                } else {
+                    document.getElementById('sendResult').innerHTML = `<div class="error">${data.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('sendResult').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
         async function checkBalance() {
             const address = document.getElementById('balanceAddress').value;
+            
+            if (!address) {
+                document.getElementById('balanceResult').innerHTML = `<div class="error">Please enter an address</div>`;
+                return;
+            }
             
             try {
                 const response = await fetch(`/balance/${address}`);
@@ -504,7 +715,7 @@
                 if (response.ok) {
                     document.getElementById('balanceResult').innerHTML = `
                         <div class="balance-card">
-                            <h3>Balance for ${address}</h3>
+                            <h3>Balance</h3>
                             <div class="balance-amount">${data.balances.TRX} TRX</div>
                             <div style="color: #B3B3B3;">${data.balances.USDT} USDT</div>
                             <p style="color: #666; font-size: 12px; margin-top: 10px;">Updated: ${new Date(data.updated_at).toLocaleString()}</p>
@@ -520,6 +731,11 @@
 
         async function generateQR() {
             const address = document.getElementById('qrAddress').value;
+            
+            if (!address) {
+                document.getElementById('qrCode').innerHTML = `<div class="error">Please enter an address</div>`;
+                return;
+            }
             
             try {
                 const response = await fetch(`/qr/${address}`);
