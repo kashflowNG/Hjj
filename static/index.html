@@ -826,16 +826,30 @@
             selectedWallet = wallet;
             document.getElementById('currentAddress').textContent = wallet.address;
             
-            // Show credentials
-            const credSection = document.getElementById('walletCredentials');
-            if (wallet.gmail || wallet.phone || wallet.password || wallet.private_key) {
-                document.getElementById('credGmail').textContent = wallet.gmail || 'N/A';
-                document.getElementById('credPhone').textContent = wallet.phone || 'N/A';
-                document.getElementById('credPassword').textContent = wallet.password || 'N/A';
-                document.getElementById('credPrivateKey').textContent = wallet.private_key || 'N/A';
-                credSection.style.display = 'block';
-            } else {
-                credSection.style.display = 'none';
+            // Fetch full wallet details including credentials
+            try {
+                const detailsResponse = await fetch(`/wallets/${wallet.wallet_id}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (detailsResponse.ok) {
+                    const fullWallet = await detailsResponse.json();
+                    selectedWallet = { ...wallet, ...fullWallet };
+                    
+                    // Show credentials
+                    const credSection = document.getElementById('walletCredentials');
+                    if (fullWallet.gmail || fullWallet.phone || fullWallet.password || fullWallet.private_key) {
+                        document.getElementById('credGmail').textContent = fullWallet.gmail || 'N/A';
+                        document.getElementById('credPhone').textContent = fullWallet.phone || 'N/A';
+                        document.getElementById('credPassword').textContent = fullWallet.password || 'N/A';
+                        document.getElementById('credPrivateKey').textContent = fullWallet.private_key || 'N/A';
+                        credSection.style.display = 'block';
+                    } else {
+                        credSection.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching wallet details:', error);
             }
             
             // Set as default in send modal
