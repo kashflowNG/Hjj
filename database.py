@@ -18,7 +18,7 @@ Base = declarative_base()
 
 # Database Models
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "app_users"
     
     id = Column(String, primary_key=True, index=True)
     pin_hash = Column(String, nullable=False)
@@ -28,10 +28,10 @@ class User(Base):
     wallets = relationship("Wallet", back_populates="user", cascade="all, delete-orphan")
 
 class Wallet(Base):
-    __tablename__ = "wallets"
+    __tablename__ = "app_wallets"
     
     id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    user_id = Column(String, ForeignKey("app_users.id"), nullable=False)
     name = Column(String, nullable=False)
     address = Column(String, nullable=False, index=True)
     private_key = Column(String, nullable=False)

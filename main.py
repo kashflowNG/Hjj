@@ -21,7 +21,7 @@ from passlib.context import CryptContext
 from tronpy import Tron
 from tronpy.keys import PrivateKey
 from sqlalchemy.orm import Session
-from database import get_db, init_db, User, Wallet
+from database import get_db, init_db, User, Wallet, DemoProfile as DemoProfileModel
 
 init_db()
 
@@ -40,9 +40,11 @@ app.add_middleware(
 )
 
 # Configuration
-SECRET_KEY = os.getenv("SESSION_SECRET", "your-secret-key-change-in-production")
+SECRET_KEY = os.getenv("SESSION_SECRET")
+if not SECRET_KEY:
+    raise ValueError("SESSION_SECRET environment variable must be set for secure JWT token generation")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 TRON_NETWORK = os.getenv("TRON_NETWORK", "nile")
 
 # Pydantic Models
